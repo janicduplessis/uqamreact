@@ -3,17 +3,17 @@
  */
 'use strict';
 
-let React = require('react-native');
-let {
+var React = require('react-native');
+var {
   NavigatorIOS,
   StyleSheet,
   TabBarIOS,
 } = React;
-let TabBarItemIOS = TabBarIOS.Item;
+var TabBarItemIOS = TabBarIOS.Item;
 
-let HomeScreen = require('./HomeScreen');
-let GradesScreen = require('./GradesScreen');
-let ScheduleScreen = require('./ScheduleScreen');
+var HomeScreen = require('./HomeScreen');
+var GradesScreen = require('./GradesScreen');
+var ScheduleScreen = require('./ScheduleScreen');
 
 class MainTabsController extends React.Component {
   constructor(props) {
@@ -88,7 +88,7 @@ class MainTabsController extends React.Component {
   }
 }
 
-let styles = StyleSheet.create({
+var styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',

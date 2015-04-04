@@ -3,8 +3,8 @@
  */
  'use strict';
 
-let React = require('react-native');
-let {
+var React = require('react-native');
+var {
   StyleSheet,
   View,
   Text,
@@ -24,7 +24,7 @@ class Button extends React.Component {
   }
 }
 
-let styles = StyleSheet.create({
+var styles = StyleSheet.create({
   wrapper: {
     paddingVertical: 8,
     paddingHorizontal: 16,

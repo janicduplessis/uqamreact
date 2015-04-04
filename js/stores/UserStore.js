@@ -3,19 +3,19 @@
  */
 'use strict';
 
-let EventEmitter = require('events').EventEmitter;
-let assign = require('object-assign');
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
 
-let Dispatcher = require('../dispatcher/Dispatcher');
-let UserConstants = require('../constants/UserConstants');
+var Dispatcher = require('../dispatcher/Dispatcher');
+var UserConstants = require('../constants/UserConstants');
 
-let ActionTypes = UserConstants.ActionTypes;
-const CHANGE_EVENT = 'change';
-const ERROR_EVENT = 'error';
+var ActionTypes = UserConstants.ActionTypes;
+var CHANGE_EVENT = 'change';
+var ERROR_EVENT = 'error';
 
-let _user = null;
+var _user = null;
 
-let UserStore = assign({}, EventEmitter.prototype, {
+var UserStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
     this.emit(CHANGE_EVENT, _user);
   },

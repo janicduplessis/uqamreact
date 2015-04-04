@@ -3,18 +3,18 @@
  */
 'use strict';
 
-let EventEmitter = require('events').EventEmitter;
-let assign = require('object-assign');
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
 
-let Dispatcher = require('../dispatcher/Dispatcher');
-let GradesConstants = require('../constants/GradesConstants');
+var Dispatcher = require('../dispatcher/Dispatcher');
+var GradesConstants = require('../constants/GradesConstants');
 
-let ActionTypes = GradesConstants.ActionTypes;
-const CHANGE_EVENT = 'change';
+var ActionTypes = GradesConstants.ActionTypes;
+var CHANGE_EVENT = 'change';
 
-let _grades = [];
+var _grades = [];
 
-let GradesStore = assign({}, EventEmitter.prototype, {
+var GradesStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
     this.emit(CHANGE_EVENT, _grades);
   },
@@ -35,8 +35,8 @@ let GradesStore = assign({}, EventEmitter.prototype, {
 GradesStore.dispatchToken = Dispatcher.register((action) => {
   switch(action.type) {
   case ActionTypes.RECEIVE_GRADES:
-    for(let g of action.grades) {
-      let id = getGradeIndex(g);
+    for(var g of action.grades) {
+      var id = getGradeIndex(g);
       if(id >= 0) {
         _grades[id] = g;
       } else {
@@ -49,7 +49,7 @@ GradesStore.dispatchToken = Dispatcher.register((action) => {
 });
 
 function getGradeIndex(g) {
-  for(let i = 0; i < _grades.length; i++) {
+  for(var i = 0; i < _grades.length; i++) {
     if(_grades[i].code === g.code
         && _grades[i].group === g.group
         && _grades[i].session === g.session) {

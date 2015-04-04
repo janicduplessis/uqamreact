@@ -3,8 +3,8 @@
  */
 'use strict';
 
-let React = require('react-native');
-let {
+var React = require('react-native');
+var {
   ActivityIndicatorIOS,
   PixelRatio,
   StyleSheet,
@@ -13,8 +13,8 @@ let {
   Text,
 } = React;
 
-let GradesActionCreators = require('../actions/GradesActionCreators');
-let GradesStore = require('../stores/GradesStore');
+var GradesActionCreators = require('../actions/GradesActionCreators');
+var GradesStore = require('../stores/GradesStore');
 
 class GradesScreen extends React.Component {
   constructor() {
@@ -44,8 +44,8 @@ class GradesScreen extends React.Component {
           </View>
         );
       }
-      let gradeLists = [];
-      for(let g of this.state.grades) {
+      var gradeLists = [];
+      for(var g of this.state.grades) {
         gradeLists.push(<GradeList grades={g} />);
       }
       return (
@@ -60,9 +60,9 @@ class GradesScreen extends React.Component {
 
 class GradeList extends React.Component {
   render() {
-    let grades = this.props.grades;
-    let rows = [];
-    for(let g of grades.grades) {
+    var grades = this.props.grades;
+    var rows = [];
+    for(var g of grades.grades) {
       rows.push(
         <View style={styles.gradeRow}>
           <View style={styles.separator} />
@@ -92,7 +92,7 @@ class GradeList extends React.Component {
   }
 }
 
-let styles = StyleSheet.create({
+var styles = StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',

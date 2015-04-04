@@ -3,10 +3,10 @@
  */
 'use strict';
 
-let Dispatcher = require('../dispatcher/Dispatcher');
-let UserConstants = require('../constants/UserConstants');
+var Dispatcher = require('../dispatcher/Dispatcher');
+var UserConstants = require('../constants/UserConstants');
 
-let ActionTypes = UserConstants.ActionTypes;
+var ActionTypes = UserConstants.ActionTypes;
 
 module.exports = {
 	receiveUser(user, error) {

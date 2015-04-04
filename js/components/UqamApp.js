@@ -3,17 +3,17 @@
  */
 'use strict';
 
-let React = require('react-native');
-let {
+var React = require('react-native');
+var {
   View,
   AlertIOS,
 } = React;
 
-let UserActionCreators = require('../actions/UserActionCreators');
-let UserStore = require('../stores/UserStore');
+var UserActionCreators = require('../actions/UserActionCreators');
+var UserStore = require('../stores/UserStore');
 
-let LoginScreen = require('./LoginScreen');
-let MainTabsController = require('./MainTabsController');
+var LoginScreen = require('./LoginScreen');
+var MainTabsController = require('./MainTabsController');
 
 class UqamApp extends React.Component {
   constructor() {

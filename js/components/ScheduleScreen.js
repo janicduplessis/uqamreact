@@ -3,8 +3,8 @@
  */
 'use strict';
 
-let React = require('react-native');
-let {
+var React = require('react-native');
+var {
   StyleSheet,
   View,
   Text,
@@ -22,7 +22,7 @@ class ScheduleScreen extends React.Component {
   }
 }
 
-let styles = StyleSheet.create({
+var styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',

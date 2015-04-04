@@ -3,13 +3,13 @@
  */
 'use strict';
 
-let React = require('react-native');
-let AsyncStorage = React.AsyncStorage;
+var React = require('react-native');
+var AsyncStorage = React.AsyncStorage;
 
-let UserServerActionCreators = require('../actions/UserServerActionCreators');
-let ApiUtils = require('./ApiUtils');
+var UserServerActionCreators = require('../actions/UserServerActionCreators');
+var ApiUtils = require('./ApiUtils');
 
-const KEY_USER_STORE = 'user_store';
+var KEY_USER_STORE = 'user_store';
 
 module.exports = {
 	getCurrentUser() {
@@ -18,7 +18,7 @@ module.exports = {
 				// Uh error?
 				throw new Error(error);
 			}
-			let user = JSON.parse(result);
+			var user = JSON.parse(result);
 			if(user && user.auth) {
 				ApiUtils.setAuth(user.auth.code, user.auth.nip);
 			}

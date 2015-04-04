@@ -3,16 +3,16 @@
  */
 'use strict';
 
-let React = require('react-native');
-let {
+var React = require('react-native');
+var {
   StyleSheet,
   View,
   TextInput,
 } = React;
 
-let Button = require('./widgets/Button');
+var Button = require('./widgets/Button');
 
-let UserActionCreators = require('../actions/UserActionCreators');
+var UserActionCreators = require('../actions/UserActionCreators');
 
 class LoginScreen extends React.Component {
   constructor() {
@@ -55,7 +55,7 @@ class LoginScreen extends React.Component {
   }
 }
 
-let styles = StyleSheet.create({
+var styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',

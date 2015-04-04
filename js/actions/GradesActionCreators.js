@@ -3,11 +3,11 @@
  */
 'use strict';
 
-let Dispatcher = require('../dispatcher/Dispatcher');
-let GradesConstants = require('../constants/GradesConstants');
-let GradesUtils = require('../utils/GradesUtils');
+var Dispatcher = require('../dispatcher/Dispatcher');
+var GradesConstants = require('../constants/GradesConstants');
+var GradesUtils = require('../utils/GradesUtils');
 
-let ActionTypes = GradesConstants.ActionTypes;
+var ActionTypes = GradesConstants.ActionTypes;
 
 module.exports = {
   getGrades(session) {

@@ -6,15 +6,15 @@
  */
 'use strict';
 
-const URL_BASE = 'https://mobile.uqam.ca/portail_etudiant';
+var URL_BASE = 'https://mobile.uqam.ca/portail_etudiant';
 
-const URL_LOGIN = URL_BASE + '/proxy_dossier_etud.php';
-const URL_GRADES = URL_BASE + '/proxy_resultat.php';
+var URL_LOGIN = URL_BASE + '/proxy_dossier_etud.php';
+var URL_GRADES = URL_BASE + '/proxy_resultat.php';
 
 module.exports = {
   login(code, nip) {
     return new Promise((resolve, reject) => {
-      let params = {
+      var params = {
         'code_perm': code,
         'nip': nip,
         'service': 'authentification',
@@ -26,7 +26,7 @@ module.exports = {
             return;
           }
 
-          let user = {
+          var user = {
             firstName: resp['socio']['prenom'],
             lastName: resp['socio']['nom'],
             auth: {
@@ -48,10 +48,10 @@ module.exports = {
             return;
           }
 
-          let courses = [];
-          for(let session of resp) {
-            for(let course of session['cours']) {
-              let courseGroup = course['cours_gr'].split('-');
+          var courses = [];
+          for(var session of resp) {
+            for(var course of session['cours']) {
+              var courseGroup = course['cours_gr'].split('-');
               courses.push({
                 name: course['titre'],
                 code: courseGroup[0],
@@ -67,7 +67,7 @@ module.exports = {
 
   getGrades(session, code, group) {
     return new Promise((resolve, reject) => {
-      let params = {
+      var params = {
         'annee': session,
         'sigle': code,
         'groupe': group,
@@ -78,18 +78,18 @@ module.exports = {
           // There is multiple possible layouts of this data depending on what is visible for
           // this class.
           // We will guess what is what by checking the number of columns in the table.
-          let result = {
+          var result = {
             code: code,
             group: group,
             session: session,
             grades: [],
             total: {},
           };
-          let node0 = resp['0'];
-          let node1 = resp['1'];
-          let gradeRows = node1 ? node0.slice(1) : node0.slice(2);
-          let wGradeRows = node1 ? node1.slice(1) : gradeRows;
-          let indexes;
+          var node0 = resp['0'];
+          var node1 = resp['1'];
+          var gradeRows = node1 ? node0.slice(1) : node0.slice(2);
+          var wGradeRows = node1 ? node1.slice(1) : gradeRows;
+          var indexes;
           switch(node0[0].length) {
           case 3:
             indexes = {
@@ -116,9 +116,9 @@ module.exports = {
           default:
             throw new Error('Unknown results layout');
           }
-          for(let i = 0; i < wGradeRows.length; i++) {
-            let g = gradeRows[i];
-            let wg = wGradeRows[i];
+          for(var i = 0; i < wGradeRows.length; i++) {
+            var g = gradeRows[i];
+            var wg = wGradeRows[i];
             if(wg[0].indexOf('Total') >= 0) {
               result.total.result = wg[indexes.result];
               result.total.average = wg[indexes.average];
@@ -150,8 +150,8 @@ module.exports = {
 
 function getSessionCode(sessionStr) {
   sessionStr = sessionStr.substring(0, sessionStr.length - 1);
-  let parts = sessionStr.split(' ');
-  let code = parts[1];
+  var parts = sessionStr.split(' ');
+  var code = parts[1];
   switch(parts[0]) {
   case 'automne':
     code += '3';
@@ -168,13 +168,13 @@ function getSessionCode(sessionStr) {
   return code;
 }
 
-let client = {
+var client = {
   auth: null,
 
   send(method, url, params) {
     params = params || {};
-    let body = null;
-    let headers = {
+    var body = null;
+    var headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Origin': 'https://mobile.uqam.ca',
       'Referer': 'https://mobile.uqam.ca/portail_etudiant/',
@@ -211,8 +211,8 @@ let client = {
   },
 
   encodeParams(obj) {
-    let str = [];
-    for(let p in obj)
+    var str = [];
+    for(var p in obj)
       if (obj.hasOwnProperty(p)) {
         str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
       }

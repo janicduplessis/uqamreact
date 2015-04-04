@@ -3,10 +3,10 @@
  */
 'use strict';
 
-let Dispatcher = require('../dispatcher/Dispatcher');
-let GradesConstants = require('../constants/GradesConstants');
+var Dispatcher = require('../dispatcher/Dispatcher');
+var GradesConstants = require('../constants/GradesConstants');
 
-let ActionTypes = GradesConstants.ActionTypes;
+var ActionTypes = GradesConstants.ActionTypes;
 
 module.exports = {
 	receiveGrades(grades, error) {

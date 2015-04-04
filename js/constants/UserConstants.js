@@ -3,7 +3,7 @@
  */
 'use strict';
 
-let keyMirror = require('keymirror');
+var keyMirror = require('keymirror');
 
 module.exports = {
 

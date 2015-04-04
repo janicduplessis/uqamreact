@@ -3,8 +3,8 @@
  */
 'use strict';
 
-let GradesServerActionCreators = require('../actions/GradesServerActionCreators');
-let ApiUtils = require('./ApiUtils');
+var GradesServerActionCreators = require('../actions/GradesServerActionCreators');
+var ApiUtils = require('./ApiUtils');
 
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
     //TODO: local cache
     ApiUtils.getCourses()
       .then((courses) => {
-        for(let c of courses) {
+        for(var c of courses) {
           if(c.session === session) {
             this.getGradesForCourse(c);
           }

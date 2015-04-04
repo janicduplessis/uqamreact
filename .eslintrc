@@ -10,7 +10,6 @@
   "rules": {
     "quotes": [2, "single"],
     "no-mixed-requires": [0],
-    "no-var": [2],
     "comma-dangle": [1, "always-multiline"],
     "no-underscore-dangle": [0],
     "no-use-before-define": [0],
