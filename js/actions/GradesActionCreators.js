@@ -10,10 +10,10 @@ let GradesUtils = require('../utils/GradesUtils');
 let ActionTypes = GradesConstants.ActionTypes;
 
 module.exports = {
-  getGrades() {
+  getGrades(session) {
     Dispatcher.dispatch({
       type: ActionTypes.GET_GRADES,
     });
-    GradesUtils.getGrades();
+    GradesUtils.getGrades(session);
   },
 };

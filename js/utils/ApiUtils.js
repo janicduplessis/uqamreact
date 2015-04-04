@@ -65,16 +65,77 @@ module.exports = {
     });
   },
 
-  getGrades(session, course, group) {
+  getGrades(session, code, group) {
     return new Promise((resolve, reject) => {
       let params = {
         'annee': session,
-        'sigle': course,
+        'sigle': code,
         'groupe': group,
       };
       client.send('POST', URL_GRADES, params)
         .then((resp) => {
-
+          // The result of this is actually nested arrays representing a table of results.
+          // There is multiple possible layouts of this data depending on what is visible for
+          // this class.
+          // We will guess what is what by checking the number of columns in the table.
+          let result = {
+            code: code,
+            group: group,
+            session: session,
+            grades: [],
+            total: {},
+          };
+          let node0 = resp['0'];
+          let node1 = resp['1'];
+          let gradeRows = node1 ? node0.slice(1) : node0.slice(2);
+          let wGradeRows = node1 ? node1.slice(1) : gradeRows;
+          let indexes;
+          switch(node0[0].length) {
+          case 3:
+            indexes = {
+              name: 0,
+              result: 1,
+              average: -1,
+              stdDev: -1,
+              wResult: 2,
+              wAverage: -1,
+              wStdDev: -1,
+            };
+            break;
+          case 4:
+            indexes = {
+              name: 0,
+              result: 1,
+              average: 2,
+              stdDev: 3,
+              wResult: 1,
+              wAverage: 2,
+              wStdDev: 3,
+            };
+            break;
+          default:
+            throw new Error('Unknown results layout');
+          }
+          for(let i = 0; i < wGradeRows.length; i++) {
+            let g = gradeRows[i];
+            let wg = wGradeRows[i];
+            if(wg[0].indexOf('Total') >= 0) {
+              result.total.result = wg[indexes.result];
+              result.total.average = wg[indexes.average];
+              result.total.stdDev = wg[indexes.stdDev];
+            } else {
+              result.grades.push({
+                name: g[indexes.name],
+                result: g[indexes.result],
+                average: g[indexes.average],
+                stdDev: g[indexes.stdDev],
+                wResult: wg[indexes.wResult],
+                wAverage: wg[indexes.wAverage],
+                wStdDev: wg[indexes.wStdDev],
+              });
+            }
+          }
+          resolve(result);
         }).done();
     });
   },

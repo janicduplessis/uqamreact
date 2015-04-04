@@ -33,6 +33,7 @@ class LoginScreen extends React.Component {
           <TextInput
             style={[styles.default, styles.password]}
             placeholder="Nip"
+            password={true}
             onChange={(event) => this.nip = event.nativeEvent.text}
           />
 

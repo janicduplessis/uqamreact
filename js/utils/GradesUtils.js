@@ -3,8 +3,6 @@
  */
 'use strict';
 
-let React = require('react-native');
-
 let GradesServerActionCreators = require('../actions/GradesServerActionCreators');
 let ApiUtils = require('./ApiUtils');
 
@@ -14,14 +12,20 @@ module.exports = {
     //TODO: local cache
     ApiUtils.getCourses()
       .then((courses) => {
-        //GradesServerActionCreators.receiveGrades(courses);
+        for(let c of courses) {
+          if(c.session === session) {
+            this.getGradesForCourse(c);
+          }
+        }
       })
       .catch((error) => {
 
       });
-    ApiUtils.getGrades('20151', 'INF2120', '10')
+  },
+  getGradesForCourse(course) {
+    ApiUtils.getGrades(course.session, course.code, course.group)
       .then((grades) => {
-
+        GradesServerActionCreators.receiveGrades([grades]);
       })
       .catch((error) => {
 
