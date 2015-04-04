@@ -3,22 +3,17 @@
  */
 'use strict';
 
-var React = require('react-native');
-var {
-  AppRegistry,
-  StyleSheet,
-  NavigatorIOS,
-  TabBarIOS,
+let React = require('react-native');
+let {
   View,
   AlertIOS,
 } = React;
-var TabBarItemIOS = TabBarIOS.Item;
 
-var UserActionCreators = require('../actions/UserActionCreators');
-var UserStore = require('../stores/UserStore');
+let UserActionCreators = require('../actions/UserActionCreators');
+let UserStore = require('../stores/UserStore');
 
-var LoginScreen = require('./LoginScreen');
-var MainTabsController = require('./MainTabsController');
+let LoginScreen = require('./LoginScreen');
+let MainTabsController = require('./MainTabsController');
 
 class UqamApp extends React.Component {
   constructor() {
@@ -34,9 +29,9 @@ class UqamApp extends React.Component {
       });
     });
 
-    UserStore.addErrorListener((error) => {
+    UserStore.addErrorListener(() => {
       AlertIOS.alert('Error', 'Invalid code or nip.');
-    })
+    });
   }
 
   componentDidMount() {
@@ -50,12 +45,5 @@ class UqamApp extends React.Component {
     return this.state.user !== null ? <MainTabsController /> : <LoginScreen />;
   }
 }
-
-var styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-});
 
 module.exports = UqamApp;

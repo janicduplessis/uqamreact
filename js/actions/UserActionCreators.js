@@ -3,11 +3,11 @@
  */
 'use strict';
 
-var Dispatcher = require('../dispatcher/Dispatcher');
-var UserConstants = require('../constants/UserConstants');
-var UserUtils = require('../utils/UserUtils');
+let Dispatcher = require('../dispatcher/Dispatcher');
+let UserConstants = require('../constants/UserConstants');
+let UserUtils = require('../utils/UserUtils');
 
-var ActionTypes = UserConstants.ActionTypes;
+let ActionTypes = UserConstants.ActionTypes;
 
 module.exports = {
 

@@ -3,17 +3,28 @@
  */
 'use strict';
 
-var React = require('react-native');
-var AsyncStorage = React.AsyncStorage;
+let React = require('react-native');
 
-var UserServerActionCreators = require('../actions/UserServerActionCreators');
-var ApiUtils = require('./ApiUtils');
+let GradesServerActionCreators = require('../actions/GradesServerActionCreators');
+let ApiUtils = require('./ApiUtils');
 
-var KEY_USER_STORE = "user_store";
 
 module.exports = {
-	getGrades(session) {
-		//TODO: local cache
+  getGrades(session) {
+    //TODO: local cache
+    ApiUtils.getCourses()
+      .then((courses) => {
+        //GradesServerActionCreators.receiveGrades(courses);
+      })
+      .catch((error) => {
 
-	},
-}
+      });
+    ApiUtils.getGrades('20151', 'INF2120', '10')
+      .then((grades) => {
+
+      })
+      .catch((error) => {
+
+      });
+  },
+};

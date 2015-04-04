@@ -3,23 +3,18 @@
  */
 'use strict';
 
-var React = require('react-native');
-var {
+let React = require('react-native');
+let {
   StyleSheet,
   View,
-  Text,
   TextInput,
-  TouchableOpacity,
 } = React;
 
-var Button = require('./widgets/Button');
+let Button = require('./widgets/Button');
 
-var UserActionCreators = require('../actions/UserActionCreators');
+let UserActionCreators = require('../actions/UserActionCreators');
 
 class LoginScreen extends React.Component {
-  code: string;
-  nip: string;
-
   constructor() {
     this.code = '';
     this.nip = '';
@@ -59,11 +54,11 @@ class LoginScreen extends React.Component {
   }
 }
 
-var styles = StyleSheet.create({
+let styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 8
+    padding: 8,
   },
   default: {
     backgroundColor: 'white',

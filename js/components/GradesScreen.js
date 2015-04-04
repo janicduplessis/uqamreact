@@ -3,14 +3,24 @@
  */
 'use strict';
 
-var React = require('react-native');
-var {
+let React = require('react-native');
+let {
   StyleSheet,
   View,
   Text,
 } = React;
 
+let GradesActionCreators = require('../actions/GradesActionCreators');
+
 class GradesScreen extends React.Component {
+  constructor() {
+
+  }
+
+  componentDidMount() {
+    GradesActionCreators.getGrades();
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -18,16 +28,16 @@ class GradesScreen extends React.Component {
           Grades
         </Text>
       </View>
-    )
+    );
   }
 }
 
-var styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
       alignItems: 'center',
-  }
-}
+  },
+});
 
 module.exports = GradesScreen;

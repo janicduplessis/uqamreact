@@ -3,21 +3,21 @@
  */
 'use strict';
 
-var React = require('react-native');
-var {
+let React = require('react-native');
+let {
   StyleSheet,
   View,
   Text,
 } = React;
 
-var Button = require('./widgets/Button');
+let Button = require('./widgets/Button');
 
-var UserActionCreators = require('../actions/UserActionCreators');
-var UserStore = require('../stores/UserStore');
+let UserActionCreators = require('../actions/UserActionCreators');
+let UserStore = require('../stores/UserStore');
 
 class HomeScreen extends React.Component {
   render() {
-    var user = UserStore.get();
+    let user = UserStore.get();
     return (
       <View style={styles.container}>
         <Text>
@@ -27,16 +27,16 @@ class HomeScreen extends React.Component {
           UserActionCreators.logout();
         }}>Logout</Button>
       </View>
-    )
+    );
   }
 }
 
-var styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
       alignItems: 'center',
-  }
-}
+  },
+});
 
 module.exports = HomeScreen;

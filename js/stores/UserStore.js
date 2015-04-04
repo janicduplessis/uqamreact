@@ -3,25 +3,26 @@
  */
 'use strict';
 
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+let EventEmitter = require('events').EventEmitter;
+let assign = require('object-assign');
 
-var Dispatcher = require('../dispatcher/Dispatcher');
-var UserConstants = require('../constants/UserConstants');
+let Dispatcher = require('../dispatcher/Dispatcher');
+let UserConstants = require('../constants/UserConstants');
 
-var ActionTypes = UserConstants.ActionTypes;
-var CHANGE_EVENT = 'change';
-var ERROR_EVENT = 'error';
-var _user = null;
+let ActionTypes = UserConstants.ActionTypes;
+const CHANGE_EVENT = 'change';
+const ERROR_EVENT = 'error';
 
-var UserStore = assign({}, EventEmitter.prototype, {
-	emitChange: function() {
-		this.emit(CHANGE_EVENT, _user);
-	},
+let _user = null;
 
-	emitError: function(error) {
-		this.emit(ERROR_EVENT, error)
-	},
+let UserStore = assign({}, EventEmitter.prototype, {
+  emitChange: function() {
+    this.emit(CHANGE_EVENT, _user);
+  },
+
+  emitError: function(error) {
+    this.emit(ERROR_EVENT, error);
+  },
 
   addChangeListener: function(callback) {
     this.on(CHANGE_EVENT, callback);
@@ -32,30 +33,30 @@ var UserStore = assign({}, EventEmitter.prototype, {
   },
 
   addErrorListener: function(callback) {
-  	this.on(ERROR_EVENT, callback);
+    this.on(ERROR_EVENT, callback);
   },
 
   removeErrorListener: function(callback) {
-  	this.removeListener(ERROR_EVENT, callback);
+    this.removeListener(ERROR_EVENT, callback);
   },
 
-	get: function() {
-		return _user;
-	},
+  get: function() {
+    return _user;
+  },
 });
 
 UserStore.dispatchToken = Dispatcher.register((action) => {
-	switch(action.type) {
-	case ActionTypes.RECEIVE_USER:
-		if(action.error !== null) {
-			UserStore.emitError(action.error);
-			_user = null;
-		} else {
-			_user = action.user;
-		}
-		UserStore.emitChange();
-		break;
-	}
+  switch(action.type) {
+  case ActionTypes.RECEIVE_USER:
+    if(action.error !== null) {
+      UserStore.emitError(action.error);
+      _user = null;
+    } else {
+      _user = action.user;
+    }
+    UserStore.emitChange();
+    break;
+  }
 });
 
 module.exports = UserStore;

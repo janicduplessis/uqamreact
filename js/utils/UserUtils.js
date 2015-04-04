@@ -3,13 +3,13 @@
  */
 'use strict';
 
-var React = require('react-native');
-var AsyncStorage = React.AsyncStorage;
+let React = require('react-native');
+let AsyncStorage = React.AsyncStorage;
 
-var UserServerActionCreators = require('../actions/UserServerActionCreators');
-var ApiUtils = require('./ApiUtils');
+let UserServerActionCreators = require('../actions/UserServerActionCreators');
+let ApiUtils = require('./ApiUtils');
 
-var KEY_USER_STORE = "user_store";
+const KEY_USER_STORE = 'user_store';
 
 module.exports = {
 	getCurrentUser() {
@@ -18,7 +18,10 @@ module.exports = {
 				// Uh error?
 				throw new Error(error);
 			}
-			var user = JSON.parse(result);
+			let user = JSON.parse(result);
+			if(user && user.auth) {
+				ApiUtils.setAuth(user.auth.code, user.auth.nip);
+			}
 			UserServerActionCreators.receiveUser(user, null);
 		});
 	},
@@ -26,6 +29,9 @@ module.exports = {
 	login(loginInfo) {
 		ApiUtils.login(loginInfo.code, loginInfo.nip)
 			.then((user) => {
+				if(user && user.auth) {
+					ApiUtils.setAuth(user.auth.code, user.auth.nip);
+				}
 				UserServerActionCreators.receiveUser(user, null);
 				AsyncStorage.setItem(KEY_USER_STORE, JSON.stringify(user));
 			}).catch((error) => {
@@ -37,4 +43,4 @@ module.exports = {
 		UserServerActionCreators.receiveUser(null, null);
 		AsyncStorage.removeItem(KEY_USER_STORE);
 	},
-}
+};

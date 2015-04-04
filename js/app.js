@@ -4,16 +4,16 @@
  */
 'use strict';
 
-var React = require('react-native');
-var {
+let React = require('react-native');
+let {
   AppRegistry,
 } = React;
 
-var UqamApp = require('./components/UqamApp');
+let UqamApp = require('./components/UqamApp');
 
 class UqamMobileNative extends React.Component {
   render() {
-    return <UqamApp />
+    return <UqamApp />;
   }
 }
 
