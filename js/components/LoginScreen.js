@@ -5,6 +5,7 @@
 
 var React = require('react-native');
 var {
+  AlertIOS,
   StyleSheet,
   View,
   TextInput,
@@ -13,11 +14,14 @@ var {
 var Button = require('./widgets/Button');
 
 var UserActionCreators = require('../actions/UserActionCreators');
+var UserStore = require('../stores/UserStore');
 
 class LoginScreen extends React.Component {
   constructor() {
     this.code = '';
     this.nip = '';
+
+    UserStore.addErrorListener(this.loginError);
   }
 
   render() {
@@ -38,20 +42,24 @@ class LoginScreen extends React.Component {
           />
 
           <Button
-            onPress={() => {
-              this.doLogin();
-            }}>
+            onPress={this.doLogin}>
             Connect
           </Button>
         </View>
       </View>
     );
   }
+
   doLogin() {
     if(this.code === '' || this.nip === '') {
+      this.loginError();
       return;
     }
     UserActionCreators.login({code: this.code, nip: this.nip});
+  }
+
+  loginError() {
+    AlertIOS.alert('Error', 'Invalid code or nip.');
   }
 }
 

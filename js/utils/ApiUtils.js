@@ -10,6 +10,7 @@ var URL_BASE = 'https://mobile.uqam.ca/portail_etudiant';
 
 var URL_LOGIN = URL_BASE + '/proxy_dossier_etud.php';
 var URL_GRADES = URL_BASE + '/proxy_resultat.php';
+var URL_SCHEDULE = URL_BASE + '/proxy_dossier_etud.php';
 
 module.exports = {
   login(code, nip) {
@@ -136,6 +137,49 @@ module.exports = {
             }
           }
           resolve(result);
+        }).done();
+    });
+  },
+
+  getSchedule() {
+    return new Promise((resolve, reject) => {
+      var params = {
+        service: 'horaire',
+      };
+      client.send('POST', URL_SCHEDULE, params)
+        .then((resp) => {
+          if(resp.err) {
+            reject(resp.err);
+            return;
+          }
+          debugger;
+          var schedules = resp['trimestre'].map((ele) => {
+            //TODO: support more than one program.
+            var coursesNode = ele['programme'][0]['cours'];
+            var courses = coursesNode.map((ele) => {
+              var schedule = ele['horaire'].map((ele) => {
+                return {
+                  start: ele['hr_deb'],
+                  end: ele['hr_fin'],
+                  day: ele['jour'],
+                  local: ele['local'],
+                  note: ele['mode_util'],
+                };
+              });
+              return {
+                title: ele['titre'],
+                code: ele['sigle'],
+                group: ele['groupe'],
+                teacher: ele['enseignant'][0]['nom'],
+                schedule: schedule,
+              };
+            });
+            return {
+              session: ele['trim_num'],
+              courses: courses,
+            };
+          });
+          resolve(schedules);
         }).done();
     });
   },

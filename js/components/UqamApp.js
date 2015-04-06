@@ -6,7 +6,6 @@
 var React = require('react-native');
 var {
   View,
-  AlertIOS,
 } = React;
 
 var UserActionCreators = require('../actions/UserActionCreators');
@@ -27,10 +26,6 @@ class UqamApp extends React.Component {
         loading: false,
         user: user,
       });
-    });
-
-    UserStore.addErrorListener(() => {
-      AlertIOS.alert('Error', 'Invalid code or nip.');
     });
   }
 

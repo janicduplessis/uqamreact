@@ -6,6 +6,7 @@
 var React = require('react-native');
 var {
   ActivityIndicatorIOS,
+  Animation,
   PixelRatio,
   StyleSheet,
   ScrollView,
@@ -20,7 +21,7 @@ class GradesScreen extends React.Component {
   constructor() {
     this.state = {
       loading: true,
-      grades: null,
+      grades: [],
     };
 
     GradesStore.addChangeListener((grades) => {
@@ -44,10 +45,11 @@ class GradesScreen extends React.Component {
           </View>
         );
       }
-      var gradeLists = [];
-      for(var g of this.state.grades) {
-        gradeLists.push(<GradeList grades={g} />);
-      }
+
+      var gradeLists = this.state.grades.map((g, i) => {
+        return <GradeList key={i} grades={g} />;
+      });
+
       return (
         <ScrollView
           contentContainerStyle={styles.content}
@@ -59,23 +61,27 @@ class GradesScreen extends React.Component {
 }
 
 class GradeList extends React.Component {
+
+  componentDidMount() {
+    requestAnimationFrame(() => {
+      Animation.startAnimation(this.refs['this'], 300, 0, 'easeInOutQuad', {opacity: 1});
+    });
+  }
+
   render() {
     var grades = this.props.grades;
-    var rows = [];
-    for(var g of grades.grades) {
-      rows.push(
-        <View style={styles.gradeRow}>
-          <View style={styles.separator} />
-          <View style={styles.rowCells}>
-            <Text style={styles.gradeCell}>{g.name}</Text>
-            <Text style={styles.gradeCell}>{g.result}</Text>
-            <Text style={styles.gradeCell}>{g.average || 'N/A'}</Text>
-          </View>
-        </View>
+    var rows = grades.grades.map((g, i) => {
+      return (
+        <GradeRow
+          key={i}
+          name={g.name}
+          result={g.result}
+          average={g.average} />
       );
-    }
+    });
+
     return (
-      <View>
+      <View ref="this" style={{opacity: 0}}>
         <View style={styles.tableHeader}>
           <Text>{grades.code} - {grades.group}</Text>
         </View>
@@ -86,6 +92,25 @@ class GradeList extends React.Component {
             <Text style={[styles.gradeCell, styles.headerText]}>Average</Text>
           </View>
           {rows}
+          <GradeRow
+            name="Total"
+            result={grades.total.result}
+            average={grades.total.average} />
+        </View>
+      </View>
+    );
+  }
+}
+
+class GradeRow extends React.Component {
+  render() {
+    return (
+      <View style={styles.gradeRow}>
+        <View style={styles.separator} />
+        <View style={styles.rowCells}>
+          <Text style={styles.gradeCell}>{this.props.name}</Text>
+          <Text style={styles.gradeCell}>{this.props.result}</Text>
+          <Text style={styles.gradeCell}>{this.props.average || 'N/A'}</Text>
         </View>
       </View>
     );

@@ -43,6 +43,9 @@ GradesStore.dispatchToken = Dispatcher.register((action) => {
         _grades.push(g);
       }
     }
+
+    _grades.sort((a, b) => a.code < b.code ? -1 : 1);
+
     GradesStore.emitChange();
     break;
   }
