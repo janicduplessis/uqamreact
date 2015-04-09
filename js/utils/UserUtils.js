@@ -13,17 +13,15 @@ var KEY_USER_STORE = 'user_store';
 
 module.exports = {
 	getCurrentUser() {
-		AsyncStorage.getItem(KEY_USER_STORE, (error, result) => {
-			if(error !== null) {
-				// Uh error?
-				throw new Error(error);
-			}
+		AsyncStorage.getItem(KEY_USER_STORE).then((result) => {
 			var user = JSON.parse(result);
 			if(user && user.auth) {
 				ApiUtils.setAuth(user.auth.code, user.auth.nip);
 			}
 			UserServerActionCreators.receiveUser(user, null);
-		});
+		}).catch((error) => {
+
+		}).done();
 	},
 
 	login(loginInfo) {

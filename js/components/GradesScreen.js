@@ -6,13 +6,14 @@
 var React = require('react-native');
 var {
   ActivityIndicatorIOS,
-  Animation,
   PixelRatio,
   StyleSheet,
   ScrollView,
   View,
   Text,
 } = React;
+
+var AnimationExperimental = require('AnimationExperimental');
 
 var GradesActionCreators = require('../actions/GradesActionCreators');
 var GradesStore = require('../stores/GradesStore');
@@ -37,26 +38,26 @@ class GradesScreen extends React.Component {
   }
 
   render() {
-      if (this.state.loading) {
-        return (
-          <View style={styles.center}>
-            <ActivityIndicatorIOS
-              size="large" />
-          </View>
-        );
-      }
-
-      var gradeLists = this.state.grades.map((g, i) => {
-        return <GradeList key={i} grades={g} />;
-      });
-
+    if (this.state.loading) {
       return (
-        <ScrollView
-          contentContainerStyle={styles.content}
-          style={styles.container}>
-          {gradeLists}
-        </ScrollView>
+        <View style={styles.center}>
+          <ActivityIndicatorIOS
+            size="large" />
+        </View>
       );
+    }
+
+    var gradeLists = this.state.grades.map((g, i) => {
+      return <GradeList key={i} grades={g} />;
+    });
+
+    return (
+      <ScrollView
+        contentContainerStyle={styles.content}
+        style={styles.container}>
+        {gradeLists}
+      </ScrollView>
+    );
   }
 }
 
@@ -64,7 +65,7 @@ class GradeList extends React.Component {
 
   componentDidMount() {
     requestAnimationFrame(() => {
-      Animation.startAnimation(this.refs['this'], 300, 0, 'easeInOutQuad', {opacity: 1});
+      AnimationExperimental.startAnimation(this.refs['this'], 300, 0, 'easeInOutQuad', {opacity: 1});
     });
   }
 

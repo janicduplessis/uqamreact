@@ -152,7 +152,6 @@ module.exports = {
             reject(resp.err);
             return;
           }
-          debugger;
           var schedules = resp['trimestre'].map((ele) => {
             //TODO: support more than one program.
             var coursesNode = ele['programme'][0]['cours'];

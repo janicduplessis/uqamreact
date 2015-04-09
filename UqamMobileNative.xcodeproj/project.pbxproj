@@ -16,7 +16,7 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		1946595D1AD1C461003F8193 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 194659551AD1C385003F8193 /* libRCTAnimation.a */; };
+		194659641AD61143003F8193 /* libRCTAnimationExperimental.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 194659631AD6112C003F8193 /* libRCTAnimationExperimental.a */; };
 		19AA356E1AC7CB48000315E6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AA35681AC7CB48000315E6 /* AppDelegate.m */; };
 		19AA356F1AC7CB48000315E6 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19AA35691AC7CB48000315E6 /* LaunchScreen.xib */; };
 		19AA35701AC7CB48000315E6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19AA356B1AC7CB48000315E6 /* Images.xcassets */; };
@@ -82,12 +82,12 @@
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
 		};
-		194659541AD1C385003F8193 /* PBXContainerItemProxy */ = {
+		194659621AD6112C003F8193 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1946594E1AD1C385003F8193 /* RCTAnimation.xcodeproj */;
+			containerPortal = 1946595E1AD6112C003F8193 /* RCTAnimationExperimental.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RCTAnimation;
+			remoteInfo = RCTAnimationExperimental;
 		};
 		832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -109,7 +109,7 @@
 		00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVibration.xcodeproj; path = "node_modules/react-native/Libraries/Vibration/RCTVibration.xcodeproj"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* UqamMobileNative.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UqamMobileNative.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		1946594E1AD1C385003F8193 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "node_modules/react-native/Libraries/Animation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		1946595E1AD6112C003F8193 /* RCTAnimationExperimental.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimationExperimental.xcodeproj; path = "node_modules/react-native/Libraries/Animation/RCTAnimationExperimental.xcodeproj"; sourceTree = "<group>"; };
 		19AA35671AC7CB48000315E6 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		19AA35681AC7CB48000315E6 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		19AA356A1AC7CB48000315E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -128,13 +128,13 @@
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00481BE81AC0C86700671115 /* libRCTWebSocketDebugger.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
-				1946595D1AD1C461003F8193 /* libRCTAnimation.a in Frameworks */,
 				00C302E61ABCBA2D00DB3ED1 /* libRCTAdSupport.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
+				194659641AD61143003F8193 /* libRCTAnimationExperimental.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,10 +205,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1946594F1AD1C385003F8193 /* Products */ = {
+		1946595F1AD6112C003F8193 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				194659551AD1C385003F8193 /* libRCTAnimation.a */,
+				194659631AD6112C003F8193 /* libRCTAnimationExperimental.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -230,8 +230,8 @@
 			isa = PBXGroup;
 			children = (
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
-				1946594E1AD1C385003F8193 /* RCTAnimation.xcodeproj */,
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
+				1946595E1AD6112C003F8193 /* RCTAnimationExperimental.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
 				00C302AF1ABCB8E700DB3ED1 /* RCTAdSupport.xcodeproj */,
 				00C302B51ABCB90400DB3ED1 /* RCTGeolocation.xcodeproj */,
@@ -319,8 +319,8 @@
 					ProjectRef = 00C302AF1ABCB8E700DB3ED1 /* RCTAdSupport.xcodeproj */;
 				},
 				{
-					ProductGroup = 1946594F1AD1C385003F8193 /* Products */;
-					ProjectRef = 1946594E1AD1C385003F8193 /* RCTAnimation.xcodeproj */;
+					ProductGroup = 1946595F1AD6112C003F8193 /* Products */;
+					ProjectRef = 1946595E1AD6112C003F8193 /* RCTAnimationExperimental.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;
@@ -415,11 +415,11 @@
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		194659551AD1C385003F8193 /* libRCTAnimation.a */ = {
+		194659631AD6112C003F8193 /* libRCTAnimationExperimental.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libRCTAnimation.a;
-			remoteRef = 194659541AD1C385003F8193 /* PBXContainerItemProxy */;
+			path = libRCTAnimationExperimental.a;
+			remoteRef = 194659621AD6112C003F8193 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		832341B51AAA6A8300B99B32 /* libRCTText.a */ = {
