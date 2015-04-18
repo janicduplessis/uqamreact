@@ -24,7 +24,7 @@ module.exports = {
 		}).done();
 	},
 
-	login(loginInfo) {
+	login(loginInfo: any) {
 		ApiUtils.login(loginInfo.code, loginInfo.nip)
 			.then((user) => {
 				if(user && user.auth) {

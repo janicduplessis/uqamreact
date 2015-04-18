@@ -17,11 +17,15 @@ var UserActionCreators = require('../actions/UserActionCreators');
 var UserStore = require('../stores/UserStore');
 
 class LoginScreen extends React.Component {
-  constructor() {
-    this.code = '';
-    this.nip = '';
+  constructor(props) {
+    super(props);
 
-    UserStore.addErrorListener(this.loginError);
+    this.state = {
+      code: '',
+      nip: '',
+    };
+
+    UserStore.addErrorListener(() => this.loginError());
   }
 
   render() {
@@ -32,17 +36,19 @@ class LoginScreen extends React.Component {
             style={[styles.default, styles.username]}
             placeholder="Code"
             autoCorrect={false}
-            onChange={(event) => this.code = event.nativeEvent.text}
+            value={this.state.code}
+            onChange={(event) => this.setState({code: event.nativeEvent.text})}
           />
           <TextInput
             style={[styles.default, styles.password]}
             placeholder="Nip"
             password={true}
-            onChange={(event) => this.nip = event.nativeEvent.text}
+            value={this.state.nip}
+            onChange={(event) => this.setState({nip: event.nativeEvent.text})}
           />
 
           <Button
-            onPress={this.doLogin}>
+            onPress={() => this.doLogin()}>
             Connect
           </Button>
         </View>
@@ -51,14 +57,17 @@ class LoginScreen extends React.Component {
   }
 
   doLogin() {
-    if(this.code === '' || this.nip === '') {
+    if(this.state.code === '' || this.state.nip === '') {
       this.loginError();
       return;
     }
-    UserActionCreators.login({code: this.code, nip: this.nip});
+    UserActionCreators.login({code: this.state.code, nip: this.state.nip});
   }
 
   loginError() {
+    this.setState({
+      nip: '',
+    });
     AlertIOS.alert('Error', 'Invalid code or nip.');
   }
 }

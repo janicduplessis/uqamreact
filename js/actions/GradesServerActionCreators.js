@@ -9,7 +9,7 @@ var GradesConstants = require('../constants/GradesConstants');
 var ActionTypes = GradesConstants.ActionTypes;
 
 module.exports = {
-	receiveGrades(grades, error) {
+	receiveGrades(grades: any, error: Error) {
     Dispatcher.dispatch({
       type: ActionTypes.RECEIVE_GRADES,
       grades: grades,

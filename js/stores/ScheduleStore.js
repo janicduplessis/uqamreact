@@ -12,7 +12,7 @@ var ScheduleConstants = require('../constants/ScheduleConstants');
 var ActionTypes = ScheduleConstants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var _schedule = null;
+var _schedule = [];
 
 var ScheduleStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
@@ -27,8 +27,13 @@ var ScheduleStore = assign({}, EventEmitter.prototype, {
     this.removeListener(CHANGE_EVENT, callback);
   },
 
-  get: function() {
-    return _schedule;
+  get: function(session: string) {
+    return _schedule.find((e) => {
+      if(e.session === session) {
+        return true;
+      }
+      return false;
+    });
   },
 });
 

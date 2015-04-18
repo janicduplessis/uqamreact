@@ -1,6 +1,3 @@
-/**
- * @flow
- */
 'use strict';
 
 var keyMirror = require('keymirror');

@@ -15,7 +15,9 @@ var LoginScreen = require('./LoginScreen');
 var MainTabsController = require('./MainTabsController');
 
 class UqamApp extends React.Component {
-  constructor() {
+  constructor(props) {
+    super(props);
+
     this.state = {
       loading: true,
       user: null,

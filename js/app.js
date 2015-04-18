@@ -4,6 +4,8 @@
  */
 'use strict';
 
+require('./polyfills');
+
 var React = require('react-native');
 var {
   AppRegistry,

@@ -10,10 +10,10 @@ var ScheduleUtils = require('../utils/ScheduleUtils');
 var ActionTypes = ScheduleConstants.ActionTypes;
 
 module.exports = {
-  getSchedule(session) {
+  getSchedule() {
     Dispatcher.dispatch({
       type: ActionTypes.GET_SCHEDULE,
     });
-    ScheduleUtils.getSchedule(session);
+    ScheduleUtils.getSchedule('20151');
   },
 };

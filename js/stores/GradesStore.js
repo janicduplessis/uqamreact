@@ -35,14 +35,14 @@ var GradesStore = assign({}, EventEmitter.prototype, {
 GradesStore.dispatchToken = Dispatcher.register((action) => {
   switch(action.type) {
   case ActionTypes.RECEIVE_GRADES:
-    for(var g of action.grades) {
+    action.grades.forEach((g) => {
       var id = getGradeIndex(g);
       if(id >= 0) {
         _grades[id] = g;
       } else {
         _grades.push(g);
       }
-    }
+    });
 
     _grades.sort((a, b) => a.code < b.code ? -1 : 1);
 

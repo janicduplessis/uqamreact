@@ -1,6 +1,5 @@
 /**
  * Dispatcher
- * @flow
  */
  'use strict';
 

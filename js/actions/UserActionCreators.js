@@ -18,7 +18,7 @@ module.exports = {
     UserUtils.getCurrentUser();
   },
 
-  login(loginInfo) {
+  login(loginInfo: any) {
     Dispatcher.dispatch({
       type: ActionTypes.LOGIN,
       loginInfo: loginInfo,

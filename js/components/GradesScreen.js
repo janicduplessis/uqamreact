@@ -19,7 +19,8 @@ var GradesActionCreators = require('../actions/GradesActionCreators');
 var GradesStore = require('../stores/GradesStore');
 
 class GradesScreen extends React.Component {
-  constructor() {
+  constructor(props) {
+    super(props);
     this.state = {
       loading: true,
       grades: [],
@@ -64,9 +65,13 @@ class GradesScreen extends React.Component {
 class GradeList extends React.Component {
 
   componentDidMount() {
-    requestAnimationFrame(() => {
-      AnimationExperimental.startAnimation(this.refs['this'], 300, 0, 'easeInOutQuad', {opacity: 1});
-    });
+    AnimationExperimental.startAnimation({
+        node: this.refs['this'],
+        duration: 300,
+        easing: 'easeInOutQuad',
+        property: 'opacity',
+        toValue: 1,
+      });
   }
 
   render() {

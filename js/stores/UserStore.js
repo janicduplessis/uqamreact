@@ -9,38 +9,47 @@ var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/Dispatcher');
 var UserConstants = require('../constants/UserConstants');
 
+type User = {
+  firstName: string;
+  lastName: string;
+  auth: {
+    code: string;
+    nip: string;
+  };
+};
+
 var ActionTypes = UserConstants.ActionTypes;
 var CHANGE_EVENT = 'change';
 var ERROR_EVENT = 'error';
 
-var _user = null;
+var _user: ?User = null;
 
 var UserStore = assign({}, EventEmitter.prototype, {
-  emitChange: function() {
+  emitChange() {
     this.emit(CHANGE_EVENT, _user);
   },
 
-  emitError: function(error) {
+  emitError(error) {
     this.emit(ERROR_EVENT, error);
   },
 
-  addChangeListener: function(callback) {
+  addChangeListener(callback) {
     this.on(CHANGE_EVENT, callback);
   },
 
-  removeChangeListener: function(callback) {
+  removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
   },
 
-  addErrorListener: function(callback) {
+  addErrorListener(callback) {
     this.on(ERROR_EVENT, callback);
   },
 
-  removeErrorListener: function(callback) {
+  removeErrorListener(callback) {
     this.removeListener(ERROR_EVENT, callback);
   },
 
-  get: function() {
+  get(): ?User {
     return _user;
   },
 });

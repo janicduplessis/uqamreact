@@ -7,11 +7,11 @@ var ScheduleServerActionCreators = require('../actions/ScheduleServerActionCreat
 var ApiUtils = require('./ApiUtils');
 
 module.exports = {
-  getSchedule(session) {
+  getSchedule(session: string) {
     //TODO: local cache
     ApiUtils.getSchedule()
       .then((schedule) => {
-        ScheduleServerActionCreators.receiveSchedule(schedule);
+        ScheduleServerActionCreators.receiveSchedule(schedule, null);
       })
       .catch((error) => {
 

@@ -1,9 +1,6 @@
-/**
- * @flow
- */
 'use strict';
 
-var keyMirror = require('keymirror');
+var keyMirror = require('keyMirror');
 
 module.exports = {
 

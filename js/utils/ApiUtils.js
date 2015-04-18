@@ -6,6 +6,8 @@
  */
 'use strict';
 
+var fetch = require('fetch');
+
 var URL_BASE = 'https://mobile.uqam.ca/portail_etudiant';
 
 var URL_LOGIN = URL_BASE + '/proxy_dossier_etud.php';
@@ -13,7 +15,7 @@ var URL_GRADES = URL_BASE + '/proxy_resultat.php';
 var URL_SCHEDULE = URL_BASE + '/proxy_dossier_etud.php';
 
 module.exports = {
-  login(code, nip) {
+  login(code: string, nip: string): Promise {
     return new Promise((resolve, reject) => {
       var params = {
         'code_perm': code,
@@ -40,9 +42,9 @@ module.exports = {
     });
   },
 
-  getCourses() {
+  getCourses(): Promise {
     return new Promise((resolve, reject) => {
-      client.send('POST', URL_GRADES)
+      client.send('POST', URL_GRADES, null)
         .then((resp) => {
           if(resp.err) {
             reject(resp.err);
@@ -50,8 +52,8 @@ module.exports = {
           }
 
           var courses = [];
-          for(var session of resp) {
-            for(var course of session['cours']) {
+          resp.forEach((session) => {
+            session['cours'].forEach((course) => {
               var courseGroup = course['cours_gr'].split('-');
               courses.push({
                 name: course['titre'],
@@ -59,14 +61,14 @@ module.exports = {
                 group: courseGroup[1],
                 session: getSessionCode(session['session']),
               });
-            }
-          }
+            });
+          });
           resolve(courses);
         }).done();
     });
   },
 
-  getGrades(session, code, group) {
+  getGrades(session: string, code: string, group: string): Promise {
     return new Promise((resolve, reject) => {
       var params = {
         'annee': session,
@@ -90,7 +92,15 @@ module.exports = {
           var node1 = resp['1'];
           var gradeRows = node1 ? node0.slice(1) : node0.slice(2);
           var wGradeRows = node1 ? node1.slice(1) : gradeRows;
-          var indexes;
+          var indexes = {
+            name: -1,
+            result: -1,
+            average: -1,
+            stdDev: -1,
+            wResult: -1,
+            wAverage: -1,
+            wStdDev: -1,
+          };
           switch(node0[0].length) {
           case 3:
             indexes = {
@@ -141,7 +151,7 @@ module.exports = {
     });
   },
 
-  getSchedule() {
+  getSchedule(): Promise {
     return new Promise((resolve, reject) => {
       var params = {
         service: 'horaire',
@@ -183,7 +193,7 @@ module.exports = {
     });
   },
 
-  setAuth(code, nip) {
+  setAuth(code: string, nip: string) {
     client.auth = {
       code: code,
       nip: nip,
@@ -214,7 +224,7 @@ function getSessionCode(sessionStr) {
 var client = {
   auth: null,
 
-  send(method, url, params) {
+  send(method, url, params: any) {
     params = params || {};
     var body = null;
     var headers = {
