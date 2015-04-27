@@ -12,7 +12,7 @@ var {
   ScrollView,
 } = React;
 
-var ScheduleActionCreators = require('../actions/ScheduleActionCreators');
+var ScheduleActions = require('../actions/ScheduleActions');
 var ScheduleStore = require('../stores/ScheduleStore');
 
 class ScheduleScreen extends React.Component {
@@ -23,21 +23,26 @@ class ScheduleScreen extends React.Component {
       loading: true,
       schedule: null,
     };
+  }
 
-    ScheduleStore.addChangeListener(() => {
-      this.setState({
-        loading: false,
-        schedule: ScheduleStore.get('20151'),
-      });
+  onChange() {
+    this.setState({
+      loading: false,
+      schedule: ScheduleStore.get('20151'),
     });
   }
 
   componentDidMount() {
-    ScheduleActionCreators.getSchedule();
+    ScheduleStore.listen(this.onChange.bind(this));
+    ScheduleActions.getSchedule();
+  }
+
+  componentWillUnmount() {
+    ScheduleStore.unlisten(this.onChange.bind(this));
   }
 
   render() {
-    if (this.state.loading || !this.state.schedule) {
+    if (this.state.loading) {
       return (
         <View style={styles.center}>
           <ActivityIndicatorIOS
@@ -45,10 +50,10 @@ class ScheduleScreen extends React.Component {
         </View>
       );
     }
-    var courseList = this.state.schedule.courses.map((c, i) => {
-      var periodsList = c.schedule.map((p, i) => {
+    var courseList = this.state.schedule.toJS().courses.map((c, i) => {
+      var periodsList = c.schedule.map((p, j) => {
         return (
-          <View key={i}>
+          <View key={j}>
             <Text>{p.day}</Text>
             <Text>{p.start} - {p.end}</Text>
             <Text>{p.local}</Text>

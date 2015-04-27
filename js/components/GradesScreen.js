@@ -3,6 +3,9 @@
  */
 'use strict';
 
+var GradesStore = require('../stores/GradesStore');
+var GradesActions = require('../actions/GradesActions');
+
 var React = require('react-native');
 var {
   ActivityIndicatorIOS,
@@ -15,27 +18,29 @@ var {
 
 var AnimationExperimental = require('AnimationExperimental');
 
-var GradesActionCreators = require('../actions/GradesActionCreators');
-var GradesStore = require('../stores/GradesStore');
-
 class GradesScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-      grades: [],
-    };
 
-    GradesStore.addChangeListener((grades) => {
-      this.setState({
-        loading: false,
-        grades: grades,
-      });
+  constructor() {
+    this.state = {
+      grades: GradesStore.getGrades(),
+      loading: true,
+    };
+  }
+
+  onChange() {
+    this.setState({
+      grades: GradesStore.getGrades(),
+      loading: false,
     });
   }
 
   componentDidMount() {
-    GradesActionCreators.getGrades('20151');
+    GradesStore.listen(this.onChange.bind(this));
+    GradesActions.getGrades('20151');
+  }
+
+  componentWillUnmount() {
+    GradesStore.unlisten(this.onChange.bind(this));
   }
 
   render() {
@@ -49,7 +54,7 @@ class GradesScreen extends React.Component {
     }
 
     var gradeLists = this.state.grades.map((g, i) => {
-      return <GradeList key={i} grades={g} />;
+      return <GradeList key={i} grades={g.toJS()} />;
     });
 
     return (

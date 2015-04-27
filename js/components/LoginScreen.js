@@ -13,7 +13,7 @@ var {
 
 var Button = require('./widgets/Button');
 
-var UserActionCreators = require('../actions/UserActionCreators');
+var UserActions = require('../actions/UserActions');
 var UserStore = require('../stores/UserStore');
 
 class LoginScreen extends React.Component {
@@ -24,8 +24,20 @@ class LoginScreen extends React.Component {
       code: '',
       nip: '',
     };
+  }
 
-    UserStore.addErrorListener(() => this.loginError());
+  componentDidMount() {
+    UserStore.listen(this.onChange.bind(this));
+  }
+
+  componentWillUnmount() {
+    UserStore.unlisten(this.onChange.bind(this));
+  }
+
+  onChange() {
+    if(UserStore.getError()) {
+      this.loginError();
+    }
   }
 
   render() {
@@ -61,7 +73,7 @@ class LoginScreen extends React.Component {
       this.loginError();
       return;
     }
-    UserActionCreators.login({code: this.state.code, nip: this.state.nip});
+    UserActions.login({code: this.state.code, nip: this.state.nip});
   }
 
   loginError() {

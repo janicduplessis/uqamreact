@@ -8,7 +8,7 @@ var {
   View,
 } = React;
 
-var UserActionCreators = require('../actions/UserActionCreators');
+var UserActions = require('../actions/UserActions');
 var UserStore = require('../stores/UserStore');
 
 var LoginScreen = require('./LoginScreen');
@@ -22,17 +22,22 @@ class UqamApp extends React.Component {
       loading: true,
       user: null,
     };
+  }
 
-    UserStore.addChangeListener((user) => {
-      this.setState({
-        loading: false,
-        user: user,
-      });
+  onChange() {
+    this.setState({
+      loading: false,
+      user: UserStore.getUser(),
     });
   }
 
   componentDidMount() {
-    UserActionCreators.initLogin();
+    UserStore.listen(this.onChange.bind(this));
+    UserActions.initLogin();
+  }
+
+  componentWillUnmount() {
+    UserStore.unlisten(this.onChange.bind(this));
   }
 
   render() {

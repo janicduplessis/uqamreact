@@ -2,7 +2,6 @@
  * This module handles sending requests and parsing responses from the *not very
  * nice but better than nothing* mobile.uqam.ca/portail_etudiant api.
  *
- * @flow
  */
 'use strict';
 
@@ -15,7 +14,7 @@ var URL_GRADES = URL_BASE + '/proxy_resultat.php';
 var URL_SCHEDULE = URL_BASE + '/proxy_dossier_etud.php';
 
 module.exports = {
-  login(code: string, nip: string): Promise {
+  login(code, nip) {
     return new Promise((resolve, reject) => {
       var params = {
         'code_perm': code,
@@ -25,7 +24,7 @@ module.exports = {
       client.send('POST', URL_LOGIN, params)
         .then((resp) => {
           if(resp.err) {
-            reject(resp.err);
+            resolve({user: null, error: resp.err});
             return;
           }
 
@@ -37,12 +36,14 @@ module.exports = {
               nip: nip,
             },
           };
-          resolve(user);
-        }).done();
+          resolve({user: user, error: null});
+        })
+        .catch(reject)
+        .done();
     });
   },
 
-  getCourses(): Promise {
+  getCourses() {
     return new Promise((resolve, reject) => {
       client.send('POST', URL_GRADES, null)
         .then((resp) => {
@@ -64,11 +65,13 @@ module.exports = {
             });
           });
           resolve(courses);
-        }).done();
+        })
+        .catch(reject)
+        .done();
     });
   },
 
-  getGrades(session: string, code: string, group: string): Promise {
+  getGrades(session, code, group) {
     return new Promise((resolve, reject) => {
       var params = {
         'annee': session,
@@ -147,11 +150,13 @@ module.exports = {
             }
           }
           resolve(result);
-        }).done();
+        })
+        .catch(reject)
+        .done();
     });
   },
 
-  getSchedule(): Promise {
+  getSchedule() {
     return new Promise((resolve, reject) => {
       var params = {
         service: 'horaire',
@@ -162,38 +167,40 @@ module.exports = {
             reject(resp.err);
             return;
           }
-          var schedules = resp['trimestre'].map((ele) => {
+          var schedules = resp['trimestre'].map((s) => {
             //TODO: support more than one program.
-            var coursesNode = ele['programme'][0]['cours'];
-            var courses = coursesNode.map((ele) => {
-              var schedule = ele['horaire'].map((ele) => {
+            var coursesNode = s['programme'][0]['cours'];
+            var courses = coursesNode.map((c) => {
+              var schedule = c['horaire'].map((h) => {
                 return {
-                  start: ele['hr_deb'],
-                  end: ele['hr_fin'],
-                  day: ele['jour'],
-                  local: ele['local'],
-                  note: ele['mode_util'],
+                  start: h['hr_deb'],
+                  end: h['hr_fin'],
+                  day: h['jour'],
+                  local: h['local'],
+                  note: h['mode_util'],
                 };
               });
               return {
-                title: ele['titre'],
-                code: ele['sigle'],
-                group: ele['groupe'],
-                teacher: ele['enseignant'][0]['nom'],
+                title: c['titre'],
+                code: c['sigle'],
+                group: c['groupe'],
+                teacher: c['enseignant'][0]['nom'],
                 schedule: schedule,
               };
             });
             return {
-              session: ele['trim_num'],
+              session: s['trim_num'],
               courses: courses,
             };
           });
           resolve(schedules);
-        }).done();
+        })
+        .catch(reject)
+        .done();
     });
   },
 
-  setAuth(code: string, nip: string) {
+  setAuth(code, nip) {
     client.auth = {
       code: code,
       nip: nip,

@@ -1,49 +1,37 @@
-/**
- * @flow
- */
 'use strict';
 
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+var {
+  fromJS,
+  List,
+} = require('immutable');
 
-var Dispatcher = require('../dispatcher/Dispatcher');
-var ScheduleConstants = require('../constants/ScheduleConstants');
+var {
+  Flux,
+  Store,
+} = require('../Flux');
 
-var ActionTypes = ScheduleConstants.ActionTypes;
-var CHANGE_EVENT = 'change';
+var ScheduleActions = require('../actions/ScheduleActions');
 
-var _schedule = [];
+class ScheduleStore extends Store {
+  constructor() {
+    super();
 
-var ScheduleStore = assign({}, EventEmitter.prototype, {
-  emitChange: function() {
-    this.emit(CHANGE_EVENT, _schedule);
-  },
+    this.register(ScheduleActions.receiveSchedule, this.receiveSchedule);
 
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-  get: function(session: string) {
-    return _schedule.find((e) => {
-      if(e.session === session) {
-        return true;
-      }
-      return false;
-    });
-  },
-});
-
-ScheduleStore.dispatchToken = Dispatcher.register((action) => {
-  switch(action.type) {
-  case ActionTypes.RECEIVE_SCHEDULE:
-    _schedule = action.schedule;
-    ScheduleStore.emitChange();
-    break;
+    this.state = {
+      schedule: new List(),
+    };
   }
-});
 
-module.exports = ScheduleStore;
+  get(session) {
+    return this.state.schedule.find((s) => s.get('session') === session);
+  }
+
+  receiveSchedule(schedule) {
+    this.setState({
+      schedule: fromJS(schedule),
+    });
+  }
+}
+
+module.exports = Flux.createStore('schedule', ScheduleStore);

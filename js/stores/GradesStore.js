@@ -1,65 +1,53 @@
-/**
- * @flow
- */
 'use strict';
 
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+var {
+  fromJS,
+  List,
+} = require('immutable');
 
-var Dispatcher = require('../dispatcher/Dispatcher');
-var GradesConstants = require('../constants/GradesConstants');
+var {
+  Flux,
+  Store,
+} = require('../Flux');
 
-var ActionTypes = GradesConstants.ActionTypes;
-var CHANGE_EVENT = 'change';
+var GradesActions = require('../actions/GradesActions');
 
-var _grades = [];
+class GradesStore extends Store {
+  constructor() {
+    super();
 
-var GradesStore = assign({}, EventEmitter.prototype, {
-  emitChange: function() {
-    this.emit(CHANGE_EVENT, _grades);
-  },
+    this.register(GradesActions.receiveGrades, this.receiveGrades);
 
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
+    this.state = {
+      grades: new List(),
+    };
+  }
 
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
+  getGrades() {
+    return this.state.grades;
+  }
 
-  get: function() {
-    return _grades;
-  },
-});
+  receiveGrades(grades) {
+    var newGrades = this.state.grades.withMutations((list) => {
+      grades.forEach((curGrade) => {
+        var index = list.findIndex((g) => g.code === curGrade.code);
+        var item = fromJS(curGrade);
+        if(index < 0) {
+          list.push(item);
+        } else {
+          list.update(index, item);
+        }
+      });
 
-GradesStore.dispatchToken = Dispatcher.register((action) => {
-  switch(action.type) {
-  case ActionTypes.RECEIVE_GRADES:
-    action.grades.forEach((g) => {
-      var id = getGradeIndex(g);
-      if(id >= 0) {
-        _grades[id] = g;
-      } else {
-        _grades.push(g);
-      }
+      list.sort((a, b) => a.code < b.code ? -1 : 1);
     });
 
-    _grades.sort((a, b) => a.code < b.code ? -1 : 1);
-
-    GradesStore.emitChange();
-    break;
+    this.setState({
+      grades: newGrades,
+    });
   }
-});
-
-function getGradeIndex(g) {
-  for(var i = 0; i < _grades.length; i++) {
-    if(_grades[i].code === g.code
-        && _grades[i].group === g.group
-        && _grades[i].session === g.session) {
-      return i;
-    }
-  }
-  return -1;
 }
 
-module.exports = GradesStore;
+module.exports = Flux.createStore('grades', GradesStore);
+
+

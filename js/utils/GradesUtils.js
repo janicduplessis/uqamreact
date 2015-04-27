@@ -1,20 +1,15 @@
-/**
- * @flow
- */
 'use strict';
 
-var GradesServerActionCreators = require('../actions/GradesServerActionCreators');
 var ApiUtils = require('./ApiUtils');
 
-
 module.exports = {
-  getGrades(session: string) {
+  getGrades(session, callback) {
     //TODO: local cache
     ApiUtils.getCourses()
       .then((courses) => {
         courses.forEach((c) => {
-           if(c.session === session) {
-            this.getGradesForCourse(c);
+          if(c.session === session) {
+            this.getGradesForCourse(c, callback);
           }
         });
       })
@@ -22,10 +17,10 @@ module.exports = {
 
       });
   },
-  getGradesForCourse(course: any) {
+  getGradesForCourse(course, callback) {
     ApiUtils.getGrades(course.session, course.code, course.group)
       .then((grades) => {
-        GradesServerActionCreators.receiveGrades([grades], null);
+        callback(grades);
       })
       .catch((error) => {
 

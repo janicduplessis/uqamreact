@@ -12,20 +12,21 @@ var {
 
 var Button = require('./widgets/Button');
 
-var UserActionCreators = require('../actions/UserActionCreators');
+var UserActions = require('../actions/UserActions');
 var UserStore = require('../stores/UserStore');
 
 class HomeScreen extends React.Component {
   render() {
-    var user = UserStore.get();
+    var user = UserStore.getUser().toJS();
+    if(!user) {
+      return <View />;
+    }
     return (
       <View style={styles.container}>
         <Text>
           Hello, {user.firstName} {user.lastName}!
         </Text>
-        <Button onPress={() => {
-          UserActionCreators.logout();
-        }}>Logout</Button>
+        <Button onPress={() => UserActions.logout()}>Logout</Button>
       </View>
     );
   }
@@ -35,7 +36,7 @@ var styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-      alignItems: 'center',
+    alignItems: 'center',
   },
 });
 
