@@ -5,8 +5,6 @@
  */
 'use strict';
 
-var fetch = require('fetch');
-
 var URL_BASE = 'https://mobile.uqam.ca/portail_etudiant';
 
 var URL_LOGIN = URL_BASE + '/proxy_dossier_etud.php';
@@ -133,10 +131,12 @@ module.exports = {
           for(var i = 0; i < wGradeRows.length; i++) {
             var g = gradeRows[i];
             var wg = wGradeRows[i];
-            if(wg[0].indexOf('Total') >= 0) {
+            if(wg[0].indexOf('Total:') >= 0) {
               result.total.result = wg[indexes.result];
               result.total.average = wg[indexes.average];
               result.total.stdDev = wg[indexes.stdDev];
+            } else if (wg[0].indexOf('Note:') >= 0) {
+              result.final = wg[1];
             } else {
               result.grades.push({
                 name: g[indexes.name],

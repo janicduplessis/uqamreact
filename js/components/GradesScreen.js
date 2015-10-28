@@ -10,28 +10,35 @@ var React = require('react-native');
 var {
   ActivityIndicatorIOS,
   PixelRatio,
+  ListView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
 } = React;
 
+var RefreshableListView = require('react-native-refreshable-listview');
 var AnimationExperimental = require('AnimationExperimental');
+
+var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 class GradesScreen extends React.Component {
 
   constructor() {
     this.state = {
-      grades: GradesStore.getGrades(),
+      grades: ds.cloneWithRows(GradesStore.getGrades().toArray()),
       loading: true,
     };
   }
 
   onChange() {
     this.setState({
-      grades: GradesStore.getGrades(),
+      grades: ds.cloneWithRows(GradesStore.getGrades().toArray()),
       loading: false,
     });
+  }
+
+  reload() {
+    GradesActions.getGrades('20151');
   }
 
   componentDidMount() {
@@ -41,6 +48,10 @@ class GradesScreen extends React.Component {
 
   componentWillUnmount() {
     GradesStore.unlisten(this.onChange.bind(this));
+  }
+
+  renderGrade(g) {
+    return <GradeList grades={g.toJS()} />;
   }
 
   render() {
@@ -53,16 +64,13 @@ class GradesScreen extends React.Component {
       );
     }
 
-    var gradeLists = this.state.grades.map((g, i) => {
-      return <GradeList key={i} grades={g.toJS()} />;
-    });
-
     return (
-      <ScrollView
+      <RefreshableListView
         contentContainerStyle={styles.content}
-        style={styles.container}>
-        {gradeLists}
-      </ScrollView>
+        style={styles.container}
+        dataSource={this.state.grades}
+        renderRow={this.renderGrade}
+        loadData={this.reload.bind(this)} />
     );
   }
 }
@@ -91,6 +99,12 @@ class GradeList extends React.Component {
       );
     });
 
+    var final = grades.final ?
+      <GradeRow
+        name="Final"
+        result={grades.final}
+        average=" " /> : null;
+
     return (
       <View ref="this" style={{opacity: 0}}>
         <View style={styles.tableHeader}>
@@ -107,6 +121,7 @@ class GradeList extends React.Component {
             name="Total"
             result={grades.total.result}
             average={grades.total.average} />
+          {final}
         </View>
       </View>
     );

@@ -30,7 +30,7 @@ class GradesStore extends Store {
   receiveGrades(grades) {
     var newGrades = this.state.grades.withMutations((list) => {
       grades.forEach((curGrade) => {
-        var index = list.findIndex((g) => g.code === curGrade.code);
+        var index = list.findIndex((g) => g.get('code') === curGrade.code);
         var item = fromJS(curGrade);
         if(index < 0) {
           list.push(item);
