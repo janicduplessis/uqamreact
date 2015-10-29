@@ -1,33 +1,41 @@
 /**
  * @flow
  */
-'use strict';
-
-var GradesStore = require('../stores/GradesStore');
-var GradesActions = require('../actions/GradesActions');
-
-var React = require('react-native');
-var {
+import React, {
+  PropTypes,
+  Component,
   ActivityIndicatorIOS,
   PixelRatio,
   ListView,
   StyleSheet,
   View,
   Text,
-} = React;
+} from 'react-native';
 
-var RefreshableListView = require('react-native-refreshable-listview');
-var AnimationExperimental = require('AnimationExperimental');
+import RefreshableListView from 'react-native-refreshable-listview';
 
-var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+import GradesStore from '../stores/GradesStore';
+import GradesActions from '../actions/GradesActions';
 
-class GradesScreen extends React.Component {
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-  constructor() {
+export default class GradesScreen extends Component {
+
+  constructor(props) {
+    super(props);
     this.state = {
       grades: ds.cloneWithRows(GradesStore.getGrades().toArray()),
       loading: true,
     };
+  }
+
+  componentDidMount() {
+    GradesStore.listen(this.onChange.bind(this));
+    GradesActions.getGrades('20151');
+  }
+
+  componentWillUnmount() {
+    GradesStore.unlisten(this.onChange.bind(this));
   }
 
   onChange() {
@@ -39,15 +47,6 @@ class GradesScreen extends React.Component {
 
   reload() {
     GradesActions.getGrades('20151');
-  }
-
-  componentDidMount() {
-    GradesStore.listen(this.onChange.bind(this));
-    GradesActions.getGrades('20151');
-  }
-
-  componentWillUnmount() {
-    GradesStore.unlisten(this.onChange.bind(this));
   }
 
   renderGrade(g) {
@@ -75,21 +74,11 @@ class GradesScreen extends React.Component {
   }
 }
 
-class GradeList extends React.Component {
-
-  componentDidMount() {
-    AnimationExperimental.startAnimation({
-        node: this.refs['this'],
-        duration: 300,
-        easing: 'easeInOutQuad',
-        property: 'opacity',
-        toValue: 1,
-      });
-  }
+class GradeList extends Component {
 
   render() {
-    var grades = this.props.grades;
-    var rows = grades.grades.map((g, i) => {
+    const grades = this.props.grades;
+    const rows = grades.grades.map((g, i) => {
       return (
         <GradeRow
           key={i}
@@ -99,7 +88,7 @@ class GradeList extends React.Component {
       );
     });
 
-    var final = grades.final ?
+    const final = grades.final ?
       <GradeRow
         name="Final"
         result={grades.final}
@@ -127,8 +116,12 @@ class GradeList extends React.Component {
     );
   }
 }
+GradeList.propTypes = {
+  grades: PropTypes.array.isRequired,
+};
 
-class GradeRow extends React.Component {
+class GradeRow extends Component {
+
   render() {
     return (
       <View style={styles.gradeRow}>
@@ -143,7 +136,13 @@ class GradeRow extends React.Component {
   }
 }
 
-var styles = StyleSheet.create({
+GradeRow.propTypes = {
+  name: PropTypes.string,
+  result: PropTypes.string,
+  average: PropTypes.string,
+};
+
+const styles = StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',
@@ -185,5 +184,3 @@ var styles = StyleSheet.create({
     marginVertical: 8,
   },
 });
-
-module.exports = GradesScreen;

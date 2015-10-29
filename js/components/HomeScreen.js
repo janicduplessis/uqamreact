@@ -1,24 +1,21 @@
 /**
  * @flow
  */
-'use strict';
-
-var React = require('react-native');
-var {
+import React, {
   StyleSheet,
   View,
   Text,
-} = React;
+} from 'react-native';
 
-var Button = require('./widgets/Button');
+import Button from './widgets/Button';
 
-var UserActions = require('../actions/UserActions');
-var UserStore = require('../stores/UserStore');
+import UserActions from '../actions/UserActions';
+import UserStore from '../stores/UserStore';
 
-class HomeScreen extends React.Component {
+export default class HomeScreen extends React.Component {
   render() {
-    var user = UserStore.getUser().toJS();
-    if(!user) {
+    const user = UserStore.getUser().toJS();
+    if (!user) {
       return <View />;
     }
     return (
@@ -32,12 +29,10 @@ class HomeScreen extends React.Component {
   }
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
 });
-
-module.exports = HomeScreen;

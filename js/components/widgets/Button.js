@@ -1,17 +1,17 @@
 /**
  * @flow
  */
- 'use strict';
-
-var React = require('react-native');
-var {
+import React, {
+  PropTypes,
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
-} = React;
+} from 'react-native';
 
-class Button extends React.Component {
+import colors from '../../utils/colors';
+
+export default class Button extends React.Component {
   render() {
     return (
       <TouchableOpacity
@@ -24,15 +24,18 @@ class Button extends React.Component {
   }
 }
 
-var styles = StyleSheet.create({
+Button.propTypes = {
+  onPress: PropTypes.func,
+  children: PropTypes.node,
+};
+
+const styles = StyleSheet.create({
   wrapper: {
     paddingVertical: 8,
     paddingHorizontal: 16,
   },
   text: {
     fontSize: 16,
-    color: '#007AFF',
+    color: colors.primary,
   },
 });
-
-module.exports = Button;

@@ -1,34 +1,25 @@
 /**
  * @flow
  */
-'use strict';
-
-var React = require('react-native');
-var {
+import React, {
+  Component,
   View,
-} = React;
+} from 'react-native';
 
-var UserActions = require('../actions/UserActions');
-var UserStore = require('../stores/UserStore');
+import UserActions from '../actions/UserActions';
+import UserStore from '../stores/UserStore';
 
-var LoginScreen = require('./LoginScreen');
-var MainTabsController = require('./MainTabsController');
+import LoginScreen from './LoginScreen';
+import MainTabsController from './MainTabsController';
 
-class UqamApp extends React.Component {
+export default class UqamApp extends Component {
+
   constructor(props) {
     super(props);
-
     this.state = {
       loading: true,
       user: null,
     };
-  }
-
-  onChange() {
-    this.setState({
-      loading: false,
-      user: UserStore.getUser(),
-    });
   }
 
   componentDidMount() {
@@ -40,12 +31,17 @@ class UqamApp extends React.Component {
     UserStore.unlisten(this.onChange.bind(this));
   }
 
+  onChange() {
+    this.setState({
+      loading: false,
+      user: UserStore.getUser(),
+    });
+  }
+
   render() {
-    if(this.state.loading) {
+    if (this.state.loading) {
       return <View />;
     }
     return this.state.user !== null ? <MainTabsController /> : <LoginScreen />;
   }
 }
-
-module.exports = UqamApp;

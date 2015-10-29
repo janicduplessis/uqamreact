@@ -1,22 +1,23 @@
 /**
  * @flow
  */
-'use strict';
-
-var React = require('react-native');
-var {
+import React, {
+  Component,
   AlertIOS,
+  ToastAndroid,
   StyleSheet,
   View,
   TextInput,
-} = React;
+  Platform,
+} from 'react-native';
 
-var Button = require('./widgets/Button');
+import Button from './widgets/Button';
+import colors from '../utils/colors';
 
-var UserActions = require('../actions/UserActions');
-var UserStore = require('../stores/UserStore');
+import UserActions from '../actions/UserActions';
+import UserStore from '../stores/UserStore';
 
-class LoginScreen extends React.Component {
+export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -35,41 +36,13 @@ class LoginScreen extends React.Component {
   }
 
   onChange() {
-    if(UserStore.getError()) {
+    if (UserStore.getError()) {
       this.loginError();
     }
   }
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <View>
-          <TextInput
-            style={[styles.default, styles.username]}
-            placeholder="Code"
-            autoCorrect={false}
-            value={this.state.code}
-            onChange={(event) => this.setState({code: event.nativeEvent.text})}
-          />
-          <TextInput
-            style={[styles.default, styles.password]}
-            placeholder="Nip"
-            password={true}
-            value={this.state.nip}
-            onChange={(event) => this.setState({nip: event.nativeEvent.text})}
-          />
-
-          <Button
-            onPress={() => this.doLogin()}>
-            Connect
-          </Button>
-        </View>
-      </View>
-    );
-  }
-
   doLogin() {
-    if(this.state.code === '' || this.state.nip === '') {
+    if (this.state.code === '' || this.state.nip === '') {
       this.loginError();
       return;
     }
@@ -80,22 +53,53 @@ class LoginScreen extends React.Component {
     this.setState({
       nip: '',
     });
-    AlertIOS.alert('Error', 'Invalid code or nip.');
+    if (Platform.OS === 'ios') {
+      AlertIOS.alert('Error', 'Invalid code or nip.');
+    } else {
+      ToastAndroid.show('Invalid code or nip.', ToastAndroid.LONG);
+    }
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <View>
+          <TextInput
+            style={[styles.default, styles.username]}
+            underlineColorAndroid={colors.primary}
+            placeholder="Code"
+            autoCorrect={false}
+            value={this.state.code}
+            onChange={(event) => this.setState({code: event.nativeEvent.text})}
+          />
+          <TextInput
+            style={[styles.default, styles.password]}
+            underlineColorAndroid={colors.primary}
+            placeholder="Nip"
+            password
+            value={this.state.nip}
+            onChange={(event) => this.setState({nip: event.nativeEvent.text})}
+          />
+          <Button
+            onPress={() => this.doLogin()}
+          >
+            Connect
+          </Button>
+        </View>
+      </View>
+    );
   }
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
     padding: 8,
   },
   default: {
-    backgroundColor: 'white',
-    borderColor: '#cccccc',
-    borderRadius: 3,
+    borderColor: 'gray',
     borderWidth: 1,
-    height: 30,
     paddingLeft: 8,
   },
   username: {
@@ -105,5 +109,3 @@ var styles = StyleSheet.create({
     marginTop: 8,
   },
 });
-
-module.exports = LoginScreen;

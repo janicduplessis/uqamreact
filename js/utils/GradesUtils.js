@@ -1,20 +1,18 @@
-'use strict';
+import ApiUtils from './ApiUtils';
 
-var ApiUtils = require('./ApiUtils');
-
-module.exports = {
+export default {
   getGrades(session, callback) {
-    //TODO: local cache
+    // TODO: local cache
     ApiUtils.getCourses()
       .then((courses) => {
         courses.forEach((c) => {
-          if(c.session === session) {
+          if (c.session === session) {
             this.getGradesForCourse(c, callback);
           }
         });
       })
       .catch((error) => {
-
+        console.log(error);
       });
   },
   getGradesForCourse(course, callback) {
@@ -23,7 +21,7 @@ module.exports = {
         callback(grades);
       })
       .catch((error) => {
-
+        console.log(error);
       });
   },
 };

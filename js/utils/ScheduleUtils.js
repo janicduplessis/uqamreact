@@ -1,10 +1,8 @@
-'use strict';
-
-var ApiUtils = require('./ApiUtils');
+import ApiUtils from './ApiUtils';
 
 module.exports = {
   getSchedule() {
-    //TODO: local cache
+    // TODO: local cache
     return ApiUtils.getSchedule();
   },
 };
