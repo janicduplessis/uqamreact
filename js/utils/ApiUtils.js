@@ -42,7 +42,7 @@ export default {
     return ApiClient.send('POST', URL_LOGIN, params)
       .then((resp) => {
         if (resp.err) {
-          return {user: null, error: resp.err};
+          throw Error(resp.err);
         }
 
         const user = {
@@ -53,7 +53,7 @@ export default {
             nip: nip,
           },
         };
-        return {user: user, error: null};
+        return {user: user};
       });
   },
 

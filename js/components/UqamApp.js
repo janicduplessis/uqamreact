@@ -3,45 +3,40 @@
  */
 import React, {
   Component,
+  PropTypes,
   View,
 } from 'react-native';
+import {connect} from 'react-redux/native';
 
-import UserActions from '../actions/UserActions';
-import UserStore from '../stores/UserStore';
+import {loadUser} from '../actions/actionCreators';
 
 import LoginScreen from './LoginScreen';
 import MainTabsController from './MainTabsController';
 
-export default class UqamApp extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-      user: null,
-    };
-  }
+class UqamApp extends Component {
 
   componentDidMount() {
-    UserStore.listen(this.onChange.bind(this));
-    UserActions.initLogin();
-  }
-
-  componentWillUnmount() {
-    UserStore.unlisten(this.onChange.bind(this));
-  }
-
-  onChange() {
-    this.setState({
-      loading: false,
-      user: UserStore.getUser(),
-    });
+    loadUser();
   }
 
   render() {
-    if (this.state.loading) {
+    if (!this.pros.user) {
       return <View />;
     }
-    return this.state.user !== null ? <MainTabsController /> : <LoginScreen />;
+    return (
+      this.props.user.logged ?
+      <MainTabsController /> :
+      <LoginScreen />
+    );
   }
 }
+
+UqamApp.propTypes = {
+  user: PropTypes.object,
+};
+
+export default connect((state) => {
+  return {
+    user: state.user,
+  };
+})(UqamApp);

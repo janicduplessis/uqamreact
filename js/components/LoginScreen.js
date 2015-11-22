@@ -10,14 +10,14 @@ import React, {
   TextInput,
   Platform,
 } from 'react-native';
+import {connect} from 'react-redux/native';
 
 import Button from './widgets/Button';
 import colors from '../utils/colors';
 
-import UserActions from '../actions/UserActions';
-import UserStore from '../stores/UserStore';
+import {login} from '../actions/actionCreators';
 
-export default class LoginScreen extends Component {
+class LoginScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -27,26 +27,12 @@ export default class LoginScreen extends Component {
     };
   }
 
-  componentDidMount() {
-    UserStore.listen(this.onChange.bind(this));
-  }
-
-  componentWillUnmount() {
-    UserStore.unlisten(this.onChange.bind(this));
-  }
-
-  onChange() {
-    if (UserStore.getError()) {
-      this.loginError();
-    }
-  }
-
   doLogin() {
     if (this.state.code === '' || this.state.nip === '') {
       this.loginError();
       return;
     }
-    UserActions.login({code: this.state.code, nip: this.state.nip});
+    login(this.state.code, this.state.nip);
   }
 
   loginError() {
@@ -90,6 +76,12 @@ export default class LoginScreen extends Component {
     );
   }
 }
+
+export default connect((state) => {
+  return {
+    user: state.user,
+  };
+})(LoginScreen);
 
 const styles = StyleSheet.create({
   container: {

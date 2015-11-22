@@ -22,7 +22,7 @@ export default {
       }
       break;
     case 'POST':
-      body = this.encodeParams(params);
+      body = this._encodeParams(params);
       break;
     default:
       throw new Error('Invalid method: ' + method);
