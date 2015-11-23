@@ -53,13 +53,14 @@ export default {
             nip: nip,
           },
         };
+
         return {user: user};
       });
   },
 
   getCourses() {
     return new Promise((resolve, reject) => {
-      ApiClient.send('POST', URL_GRADES, null)
+      ApiClient.send('POST', URL_GRADES)
         .then((resp) => {
           if (resp.err) {
             reject(resp.err);

@@ -1,27 +1,17 @@
 import ApiUtils from './ApiUtils';
 
 export default {
-  getGrades(session, callback) {
+  getGrades(session) {
     // TODO: local cache
-    ApiUtils.getCourses()
+    return ApiUtils.getCourses()
       .then((courses) => {
-        courses.forEach((c) => {
-          if (c.session === session) {
-            this.getGradesForCourse(c, callback);
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(error);
+        return Promise.all(
+          courses.filter(c => c.session === session)
+            .map(c => this.getGradesForCourse(c))
+        );
       });
   },
-  getGradesForCourse(course, callback) {
-    ApiUtils.getGrades(course.session, course.code, course.group)
-      .then((grades) => {
-        callback(grades);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  getGradesForCourse(course) {
+    return ApiUtils.getGrades(course.session, course.code, course.group);
   },
 };

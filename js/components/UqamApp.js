@@ -11,21 +11,23 @@ import {connect} from 'react-redux/native';
 import {loadUser} from '../actions/actionCreators';
 
 import LoginScreen from './LoginScreen';
-import MainTabsController from './MainTabsController';
+import NavigationHandler from './NavigationHandler';
 
 class UqamApp extends Component {
 
   componentDidMount() {
-    loadUser();
+    this.props.dispatch(
+      loadUser(),
+    );
   }
 
   render() {
-    if (!this.pros.user) {
+    if (!this.props.user) {
       return <View />;
     }
     return (
       this.props.user.logged ?
-      <MainTabsController /> :
+      <NavigationHandler /> :
       <LoginScreen />
     );
   }

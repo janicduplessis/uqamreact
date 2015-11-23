@@ -4,75 +4,121 @@
 import React, {
   PropTypes,
   Component,
-  ActivityIndicatorIOS,
   PixelRatio,
   ListView,
   StyleSheet,
   View,
   Text,
+  Platform,
 } from 'react-native';
+import {connect} from 'react-redux/native';
 
-import RefreshableListView from 'react-native-refreshable-listview';
-
-import GradesStore from '../stores/GradesStore';
-import GradesActions from '../actions/GradesActions';
+import colors from '../utils/colors';
+import Progress from './widgets/Progress';
+import Dropdown, {Item as DropdownItem} from './widgets/Dropdown';
+import {getGrades} from '../actions/actionCreators';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-export default class GradesScreen extends Component {
+const sessions = [{
+  title: 'Winter 2015',
+  value: '20151',
+}, {
+  title: 'Summer 2015',
+  value: '20152',
+}, {
+  title: 'Fall 2015',
+  value: '20153',
+}, {
+  title: 'Winter 2016',
+  value: '20161',
+}];
+
+class GradesScreen extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      grades: ds.cloneWithRows(GradesStore.getGrades().toArray()),
+      session: '20151',
+      dataSource: ds.cloneWithRows(props.grades),
       loading: true,
     };
   }
 
   componentDidMount() {
-    GradesStore.listen(this.onChange.bind(this));
-    GradesActions.getGrades('20151');
+    this.onReload();
   }
 
-  componentWillUnmount() {
-    GradesStore.unlisten(this.onChange.bind(this));
-  }
-
-  onChange() {
+  componentWillReceiveProps(newProps) {
     this.setState({
-      grades: ds.cloneWithRows(GradesStore.getGrades().toArray()),
+      dataSource: ds.cloneWithRows(newProps.grades),
       loading: false,
     });
   }
 
-  reload() {
-    GradesActions.getGrades('20151');
+  onReload() {
+    this.props.dispatch(
+      getGrades(this.state.session),
+    );
+  }
+
+  onSessionChange(session) {
+    this.setState({
+      session,
+    }, () => {
+      this.onReload();
+    });
   }
 
   renderGrade(g) {
-    return <GradeList grades={g.toJS()} />;
+    return <GradeList grades={g} />;
   }
 
   render() {
     if (this.state.loading) {
       return (
         <View style={styles.center}>
-          <ActivityIndicatorIOS
-            size="large" />
+          <Progress />
         </View>
       );
     }
 
+    const sessionItems = sessions.map(s => {
+      return (
+        <DropdownItem
+          key={s.value}
+          label={s.title}
+          value={s.value}
+        />
+      );
+    });
+
     return (
-      <RefreshableListView
-        contentContainerStyle={styles.content}
-        style={styles.container}
-        dataSource={this.state.grades}
-        renderRow={this.renderGrade}
-        loadData={this.reload.bind(this)} />
+      <View style={styles.container}>
+        <Dropdown
+          selectedValue={this.state.session}
+          onValueChange={s => this.onSessionChange(s)}
+        >
+          {sessionItems}
+        </Dropdown>
+        <ListView
+          contentContainerStyle={styles.content}
+          style={styles.container}
+          dataSource={this.state.dataSource}
+          renderRow={this.renderGrade}
+        />
+      </View>
     );
   }
 }
+
+GradesScreen.propTypes = {
+  grades: PropTypes.array,
+};
+
+export default connect((state) => ({
+  grades: state.grades,
+}))(GradesScreen);
 
 class GradeList extends Component {
 
@@ -95,7 +141,7 @@ class GradeList extends Component {
         average=" " /> : null;
 
     return (
-      <View ref="this" style={{opacity: 0}}>
+      <View>
         <View style={styles.tableHeader}>
           <Text>{grades.code} - {grades.group}</Text>
         </View>
@@ -141,27 +187,29 @@ GradeRow.propTypes = {
   result: PropTypes.string,
   average: PropTypes.string,
 };
-
+const ios = Platform.OS === 'ios';
 const styles = StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#eeeeee',
+    backgroundColor: colors.grayLight,
   },
   container: {
-    backgroundColor: '#eeeeee',
+    flex: 1,
+    backgroundColor: colors.grayLight,
   },
   content: {
-    paddingBottom: 16,
+    paddingTop: ios ? 64 : 0,
+    paddingBottom: ios ? 65 : 16,
   },
   tableHeader: {
     paddingVertical: 16,
     paddingHorizontal: 8,
   },
   tableContent: {
-    backgroundColor: 'white',
-    borderColor: '#cccccc',
+    backgroundColor: colors.white,
+    borderColor: colors.grayMedium,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     paddingVertical: 8,

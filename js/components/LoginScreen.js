@@ -9,6 +9,7 @@ import React, {
   View,
   TextInput,
   Platform,
+  StatusBarIOS,
 } from 'react-native';
 import {connect} from 'react-redux/native';
 
@@ -16,6 +17,8 @@ import Button from './widgets/Button';
 import colors from '../utils/colors';
 
 import {login} from '../actions/actionCreators';
+
+const ios = Platform.OS === 'ios';
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -27,19 +30,27 @@ class LoginScreen extends Component {
     };
   }
 
+  componentDidMount() {
+    if (ios) {
+      StatusBarIOS.setStyle('default', true);
+    }
+  }
+
   doLogin() {
     if (this.state.code === '' || this.state.nip === '') {
       this.loginError();
       return;
     }
-    login(this.state.code, this.state.nip);
+    this.props.dispatch(
+      login(this.state.code, this.state.nip),
+    );
   }
 
   loginError() {
     this.setState({
       nip: '',
     });
-    if (Platform.OS === 'ios') {
+    if (ios) {
       AlertIOS.alert('Error', 'Invalid code or nip.');
     } else {
       ToastAndroid.show('Invalid code or nip.', ToastAndroid.LONG);
@@ -86,18 +97,21 @@ export default connect((state) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.white,
     padding: 8,
   },
   default: {
-    borderColor: 'gray',
+    height: 54,
+    borderColor: colors.grayMedium,
     borderWidth: 1,
-    paddingLeft: 8,
+    borderRadius: 3,
+    paddingLeft: 12,
   },
   username: {
     marginTop: 75,
   },
   password: {
-    marginTop: 8,
+    marginTop: 16,
+    marginBottom: 16,
   },
 });

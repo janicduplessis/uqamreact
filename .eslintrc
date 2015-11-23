@@ -1,8 +1,10 @@
 {
   "extends": "airbnb",
+  "parser": "babel-eslint",
   "rules": {
     "id-length": [0],
     "no-use-before-define": [0],
-    "react/no-multi-comp": [0]
+    "react/no-multi-comp": [0],
+    "react/prop-types": [1, { "ignore": ["dispatch", "children"]}]
   }
 }

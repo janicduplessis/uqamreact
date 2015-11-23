@@ -1,6 +1,6 @@
 import {LOGIN_RESPONSE, USER_LOADED} from '../actions/actionCreators';
 
-export function user(state = {logged: false}, action) {
+export default function user(state = null, action) {
   switch (action.type) {
   case LOGIN_RESPONSE:
     return {

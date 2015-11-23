@@ -1,4 +1,4 @@
-package com.uqamnativeclient;
+package com.test;
 
 import android.app.Activity;
 import android.os.Bundle;

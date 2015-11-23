@@ -1,31 +1,38 @@
 /**
  * @flow
  */
-'use strict';
-
-var React = require('react-native');
-var {
+import React, {
+  Component,
   NavigatorIOS,
   StyleSheet,
   TabBarIOS,
-} = React;
-var TabBarItemIOS = TabBarIOS.Item;
+  StatusBarIOS,
+} from 'react-native';
+const TabBarItemIOS = TabBarIOS.Item;
 
-var HomeScreen = require('./HomeScreen');
-var GradesScreen = require('./GradesScreen');
-var ScheduleScreen = require('./ScheduleScreen');
+import HomeScreen from './HomeScreen';
+import GradesScreen from './GradesScreen';
+import ScheduleScreen from './ScheduleScreen';
+import colors from '../utils/colors';
 
-class MainTabsController extends React.Component {
+export default class NavigationHandler extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedTab: 'homeTab',
     };
   }
+
+  componentDidMount() {
+    StatusBarIOS.setStyle('light-content', true);
+  }
+
   render() {
     return (
       <TabBarIOS
-        selectedTab={this.state.selectedTab}>
+        selectedTab={this.state.selectedTab}
+        tintColor={colors.primary}
+      >
         <TabBarItemIOS
           name="homeTab"
           title="Home"
@@ -38,6 +45,8 @@ class MainTabsController extends React.Component {
             });
           }}>
           <NavigatorIOS
+            barTintColor={colors.primary}
+            titleTextColor={colors.white}
             style={styles.container}
             initialRoute={{
               title: 'Home',
@@ -57,6 +66,8 @@ class MainTabsController extends React.Component {
             });
           }}>
           <NavigatorIOS
+            barTintColor={colors.primary}
+            titleTextColor={colors.white}
             style={styles.container}
             initialRoute={{
               title: 'Grades',
@@ -76,6 +87,8 @@ class MainTabsController extends React.Component {
             });
           }}>
           <NavigatorIOS
+            barTintColor={colors.primary}
+            titleTextColor={colors.white}
             style={styles.container}
             initialRoute={{
               title: 'Schedule',
@@ -88,11 +101,9 @@ class MainTabsController extends React.Component {
   }
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
   },
 });
-
-module.exports = MainTabsController;

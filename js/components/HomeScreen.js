@@ -2,32 +2,46 @@
  * @flow
  */
 import React, {
+  Component,
+  PropTypes,
   StyleSheet,
   View,
   Text,
 } from 'react-native';
+import {connect} from 'react-redux/native';
 
+import {logout} from '../actions/actionCreators';
 import Button from './widgets/Button';
 
-import UserActions from '../actions/UserActions';
-import UserStore from '../stores/UserStore';
+export default class HomeScreen extends Component {
+  onLogout() {
+    this.props.dispatch(
+      logout(),
+    );
+  }
 
-export default class HomeScreen extends React.Component {
   render() {
-    const user = UserStore.getUser().toJS();
-    if (!user) {
-      return <View />;
-    }
+    const {user} = this.props;
     return (
       <View style={styles.container}>
         <Text>
           Hello, {user.firstName} {user.lastName}!
         </Text>
-        <Button onPress={() => UserActions.logout()}>Logout</Button>
+        <Button onPress={() => this.onLogout()}>Logout</Button>
       </View>
     );
   }
 }
+
+HomeScreen.propTypes = {
+  user: PropTypes.object.isRequired,
+}
+
+export default connect((state) => {
+  return {
+    user: state.user,
+  };
+})(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {
