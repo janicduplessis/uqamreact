@@ -11,6 +11,7 @@ import React, {
   Text,
   StyleSheet,
 } from 'react-native';
+import EventEmitter from 'event-emitter';
 
 import HomeScreen from './HomeScreen';
 import GradesScreen from './GradesScreen';
@@ -25,6 +26,12 @@ const mainScreens = [{
   title: 'Grades',
   icon: '',
   Component: GradesScreen,
+  actions: [{
+    title: 'Change session',
+    icon: require('../images/icons/menu-white-36.png'),
+    show: 'always',
+  }],
+  eventEmitter: new EventEmitter(),
 }, {
   title: 'Schedule',
   icon: '',
@@ -49,7 +56,8 @@ export default class NavigationHandler extends Component {
     this.refs.navigator.immediatelyResetRouteStack([{
       name: screen.title,
       index: 0,
-      actions: [],
+      actions: screen.actions || [],
+      eventEmitter: screen.eventEmitter,
     }]);
     this.setState({
       selected: index,
@@ -83,7 +91,7 @@ export default class NavigationHandler extends Component {
     return (
       <Navigator
         ref="navigator"
-        initialRoute={{name: screen.title, index: 0, actions: []}}
+        initialRoute={{name: screen.title, index: 0, actions: screen.actions || [], eventEmitter: screen.eventEmitter}}
         renderScene={(route, navigator) =>
           <View style={styles.container}>
             <ToolbarAndroid
@@ -93,10 +101,15 @@ export default class NavigationHandler extends Component {
               titleColor="white"
               actions={route.actions}
               style={styles.toolbar}
+              onActionSelected={(pos) => {
+                route.eventEmitter.emit('action', pos);
+              }}
             />
             <screen.Component
+              ref="component"
               style={styles.container}
               name={route.name}
+              routeEvents={route.eventEmitter}
               onForward={() => {
                 const nextIndex = route.index + 1;
                 navigator.push({

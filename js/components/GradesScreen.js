@@ -12,10 +12,10 @@ import React, {
   Platform,
 } from 'react-native';
 import {connect} from 'react-redux/native';
+import DialogAndroid from 'react-native-dialogs';
 
 import colors from '../utils/colors';
 import Progress from './widgets/Progress';
-import Dropdown, {Item as DropdownItem} from './widgets/Dropdown';
 import {getGrades} from '../actions/actionCreators';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -46,6 +46,7 @@ class GradesScreen extends Component {
   }
 
   componentDidMount() {
+    this.props.routeEvents.on('action', () => this.onActionSelected());
     this.onReload();
   }
 
@@ -54,6 +55,23 @@ class GradesScreen extends Component {
       dataSource: ds.cloneWithRows(newProps.grades),
       loading: false,
     });
+  }
+
+  onActionSelected() {
+    const test = new DialogAndroid();
+    test.set({
+      title: 'Pick a session',
+      items: sessions.map(s => s.title),
+      itemsCallbackSingleChoice: (selectedIndex) => {
+        this.setState({
+          session: sessions[selectedIndex].value,
+        }, () => {
+          this.onReload();
+        });
+      },
+      selectedIndex: 0,
+    });
+    test.show();
   }
 
   onReload() {
@@ -83,24 +101,8 @@ class GradesScreen extends Component {
       );
     }
 
-    const sessionItems = sessions.map(s => {
-      return (
-        <DropdownItem
-          key={s.value}
-          label={s.title}
-          value={s.value}
-        />
-      );
-    });
-
     return (
       <View style={styles.container}>
-        <Dropdown
-          selectedValue={this.state.session}
-          onValueChange={s => this.onSessionChange(s)}
-        >
-          {sessionItems}
-        </Dropdown>
         <ListView
           contentContainerStyle={styles.content}
           style={styles.container}
