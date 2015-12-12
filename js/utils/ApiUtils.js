@@ -106,6 +106,10 @@ export default {
             total: {},
           };
           const node0 = resp['0'];
+          if (!node0) {
+            resolve(result);
+            return;
+          }
           const node1 = resp['1'];
           const gradeRows = node1 ? node0.slice(1) : node0.slice(2);
           const wGradeRows = node1 ? node1.slice(1) : gradeRows;
@@ -147,11 +151,11 @@ export default {
           for (let i = 0; i < wGradeRows.length; i++) {
             const g = gradeRows[i];
             const wg = wGradeRows[i];
-            if (wg[0].indexOf('Total:') >= 0) {
+            if (wg[0].match(/^Total.*:/g)) {
               result.total.result = wg[indexes.result];
               result.total.average = wg[indexes.average];
               result.total.stdDev = wg[indexes.stdDev];
-            } else if (wg[0].indexOf('Note:') >= 0) {
+            } else if (wg[0].match(/^Note.*:/g)) {
               result.final = wg[1];
             } else {
               result.grades.push({

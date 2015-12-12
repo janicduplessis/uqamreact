@@ -68,6 +68,7 @@ export default class NavigationHandler extends Component {
     const listItems = mainScreens.map((screen, i) => {
       return (
         <TouchableNativeFeedback
+          key={i}
           onPress={() => this.onNavigationItemClick(i)}
         >
           <View style={styles.navigationListItem}>

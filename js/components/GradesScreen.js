@@ -46,7 +46,7 @@ class GradesScreen extends Component {
   }
 
   componentDidMount() {
-    this.props.routeEvents.on('action', () => this.onActionSelected());
+    this.props.routeEvents.on('action', this.onActionSelected);
     this.onReload();
   }
 
@@ -57,21 +57,29 @@ class GradesScreen extends Component {
     });
   }
 
-  onActionSelected() {
-    const test = new DialogAndroid();
-    test.set({
+  componentWillUnmount() {
+    this.props.routeEvents.off('action', this.onActionSelected);
+  }
+
+  onActionSelected = () => {
+    const dialog = new DialogAndroid();
+    dialog.set({
       title: 'Pick a session',
       items: sessions.map(s => s.title),
       itemsCallbackSingleChoice: (selectedIndex) => {
-        this.setState({
-          session: sessions[selectedIndex].value,
-        }, () => {
-          this.onReload();
-        });
+        const session = sessions[selectedIndex].value;
+        if (session !== this.state.session) {
+          this.setState({
+            session: sessions[selectedIndex].value,
+            loading: true,
+          }, () => {
+            this.onReload();
+          });
+        }
       },
-      selectedIndex: 0,
+      selectedIndex: sessions.findIndex(s => s.value === this.state.session),
     });
-    test.show();
+    dialog.show();
   }
 
   onReload() {
@@ -116,6 +124,7 @@ class GradesScreen extends Component {
 
 GradesScreen.propTypes = {
   grades: PropTypes.array,
+  routeEvents: PropTypes.object,
 };
 
 export default connect((state) => ({

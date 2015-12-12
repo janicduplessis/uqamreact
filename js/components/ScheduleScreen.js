@@ -1,21 +1,16 @@
 /**
  * @flow
  */
-'use strict';
-
-var React = require('react-native');
-var {
+import React, {
+  Component,
   ActivityIndicatorIOS,
   StyleSheet,
   View,
   Text,
   ScrollView,
-} = React;
+} from 'react-native';
 
-var ScheduleActions = require('../actions/ScheduleActions');
-var ScheduleStore = require('../stores/ScheduleStore');
-
-class ScheduleScreen extends React.Component {
+class ScheduleScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -25,20 +20,10 @@ class ScheduleScreen extends React.Component {
     };
   }
 
-  onChange() {
-    this.setState({
-      loading: false,
-      schedule: ScheduleStore.get('20151'),
-    });
-  }
-
   componentDidMount() {
-    ScheduleStore.listen(this.onChange.bind(this));
-    ScheduleActions.getSchedule();
   }
 
   componentWillUnmount() {
-    ScheduleStore.unlisten(this.onChange.bind(this));
   }
 
   render() {
@@ -50,8 +35,8 @@ class ScheduleScreen extends React.Component {
         </View>
       );
     }
-    var courseList = this.state.schedule.toJS().courses.map((c, i) => {
-      var periodsList = c.schedule.map((p, j) => {
+    const courseList = this.state.schedule.toJS().courses.map((c, i) => {
+      const periodsList = c.schedule.map((p, j) => {
         return (
           <View key={j}>
             <Text>{p.day}</Text>
@@ -75,7 +60,7 @@ class ScheduleScreen extends React.Component {
   }
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     backgroundColor: '#eeeeee',
   },

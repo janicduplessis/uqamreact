@@ -48,10 +48,11 @@ export default {
 
   _encodeParams(obj) {
     const str = [];
-    for (const prop in obj)
+    for (const prop in obj) {
       if (obj.hasOwnProperty(prop)) {
         str.push(encodeURIComponent(prop) + '=' + encodeURIComponent(obj[prop]));
       }
+    }
     return str.join('&');
   },
 };

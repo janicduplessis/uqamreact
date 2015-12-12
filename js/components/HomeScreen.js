@@ -35,7 +35,7 @@ export default class HomeScreen extends Component {
 
 HomeScreen.propTypes = {
   user: PropTypes.object.isRequired,
-}
+};
 
 export default connect((state) => {
   return {
