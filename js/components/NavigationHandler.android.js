@@ -50,14 +50,15 @@ export default class NavigationHandler extends Component {
 
   renderNavigationView() {
     const listItems = routes.map((route, i) => {
+      const selected = i === this.state.selected;
       return (
         <TouchableNativeFeedback
           key={i}
           onPress={() => this.onNavigationItemClick(i)}
         >
           <View style={styles.navigationListItem}>
-            <Image source={route.icon} style={styles.navigationListIcon} />
-            <Text style={(i === this.state.selected) && styles.navigationListItemSelected}>
+            <Image source={route.icon} style={[styles.navigationListIcon, selected && styles.navigationListIconSelected]} />
+            <Text style={selected && styles.navigationListItemSelected}>
               {route.title}
             </Text>
           </View>
@@ -151,6 +152,7 @@ const styles = StyleSheet.create({
   },
   navigationListItem: {
     flexDirection: 'row',
+    alignItems: 'center',
     padding: 16,
   },
   navigationListItemSelected: {
@@ -160,5 +162,11 @@ const styles = StyleSheet.create({
   navigationListIcon: {
     width: 24,
     height: 24,
+    marginRight: 8,
+    opacity: 0.54,
+  },
+  navigationListIconSelected: {
+    tintColor: colors.primary,
+    opacity: 1,
   },
 });
