@@ -1,7 +1,7 @@
 import ApiUtils from './ApiUtils';
 
-export default {
-  getGrades(session) {
+export default class GradeUtils {
+  static getGrades(session) {
     // TODO: local cache
     return ApiUtils.getCourses()
       .then((courses) => {
@@ -10,8 +10,8 @@ export default {
             .map(c => this.getGradesForCourse(c))
         );
       });
-  },
-  getGradesForCourse(course) {
+  }
+  static getGradesForCourse(course) {
     return ApiUtils.getGrades(course.session, course.code, course.group);
-  },
-};
+  }
+}

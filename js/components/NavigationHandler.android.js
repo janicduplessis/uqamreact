@@ -3,46 +3,31 @@
  */
 import React, {
   Component,
+  PropTypes,
   DrawerLayoutAndroid,
   Navigator,
   ToolbarAndroid,
   TouchableNativeFeedback,
   View,
   Text,
+  Image,
   StyleSheet,
 } from 'react-native';
-import EventEmitter from 'event-emitter';
 
-import HomeScreen from './HomeScreen';
-import GradesScreen from './GradesScreen';
-import ScheduleScreen from './ScheduleScreen';
 import colors from '../utils/colors';
-
-const mainScreens = [{
-  title: 'Home',
-  icon: '',
-  Component: HomeScreen,
-}, {
-  title: 'Grades',
-  icon: '',
-  Component: GradesScreen,
-  actions: [{
-    title: 'Change session',
-    icon: require('../images/icons/menu-white-36.png'),
-    show: 'always',
-  }],
-  eventEmitter: new EventEmitter(),
-}, {
-  title: 'Schedule',
-  icon: '',
-  Component: ScheduleScreen,
-}];
+import routes from '../routes';
 
 export default class NavigationHandler extends Component {
+
+  static propTypes = {
+    route: PropTypes.number.isRequired,
+    onRouteChange: PropTypes.func.isRequired,
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      selected: 0,
+      selected: props.route,
     };
   }
 
@@ -51,29 +36,29 @@ export default class NavigationHandler extends Component {
   }
 
   onNavigationItemClick(index: number) {
-    const screen = mainScreens[index];
+    const screen = routes[index];
     this.refs.drawer.closeDrawer();
     this.refs.navigator.immediatelyResetRouteStack([{
-      name: screen.title,
       index: 0,
-      actions: screen.actions || [],
-      eventEmitter: screen.eventEmitter,
+      ...screen,
     }]);
     this.setState({
       selected: index,
     });
+    this.props.onRouteChange(index);
   }
 
   renderNavigationView() {
-    const listItems = mainScreens.map((screen, i) => {
+    const listItems = routes.map((route, i) => {
       return (
         <TouchableNativeFeedback
           key={i}
           onPress={() => this.onNavigationItemClick(i)}
         >
           <View style={styles.navigationListItem}>
+            <Image source={route.icon} style={styles.navigationListIcon} />
             <Text style={(i === this.state.selected) && styles.navigationListItemSelected}>
-              {screen.title}
+              {route.title}
             </Text>
           </View>
         </TouchableNativeFeedback>
@@ -88,18 +73,22 @@ export default class NavigationHandler extends Component {
   }
 
   renderContent() {
-    const screen = mainScreens[this.state.selected];
+    const screen = routes[this.state.selected];
     return (
       <Navigator
         ref="navigator"
-        initialRoute={{name: screen.title, index: 0, actions: screen.actions || [], eventEmitter: screen.eventEmitter}}
+        initialRoute={{
+          index: 0,
+          ...screen,
+        }}
         renderScene={(route, navigator) =>
           <View style={styles.container}>
             <ToolbarAndroid
               navIcon={require('../images/icons/menu-white-36.png')}
               onIconClicked={() => this.onOpenNavigation()}
-              title={route.name}
+              title={route.title}
               titleColor="white"
+              subtitleColor="white"
               actions={route.actions}
               style={styles.toolbar}
               onActionSelected={(pos) => {
@@ -161,10 +150,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   navigationListItem: {
+    flexDirection: 'row',
     padding: 16,
   },
   navigationListItemSelected: {
     color: colors.primary,
     fontWeight: 'bold',
+  },
+  navigationListIcon: {
+    width: 24,
+    height: 24,
   },
 });

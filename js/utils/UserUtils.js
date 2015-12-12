@@ -1,4 +1,4 @@
-import {AsyncStorage} from 'react-native';
+import Storage from './Storage';
 
 import ApiUtils from './ApiUtils';
 import ApiClient from './ApiClient';
@@ -7,9 +7,8 @@ const KEY_USER_STORE = 'user_store';
 
 export default {
   loadUser() {
-    return AsyncStorage.getItem(KEY_USER_STORE)
-      .then((result) => {
-        const user = JSON.parse(result);
+    return Storage.getItem(KEY_USER_STORE)
+      .then((user) => {
         if (user && user.auth) {
           ApiClient.setAuth(user.auth.code, user.auth.nip);
         }
@@ -24,12 +23,12 @@ export default {
         if (user && user.auth && !error) {
           ApiClient.setAuth(user.auth.code, user.auth.nip);
         }
-        AsyncStorage.setItem(KEY_USER_STORE, JSON.stringify(user));
+        Storage.setItem(KEY_USER_STORE, user);
         return Promise.resolve(userErr);
       });
   },
 
   logout() {
-    AsyncStorage.removeItem(KEY_USER_STORE);
+    Storage.removeItem(KEY_USER_STORE);
   },
 };

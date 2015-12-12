@@ -16,7 +16,7 @@ import DialogAndroid from 'react-native-dialogs';
 
 import colors from '../utils/colors';
 import Progress from './widgets/Progress';
-import {getGrades} from '../actions/actionCreators';
+import {getGrades, setGradesSession} from '../actions/actionCreators';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -36,10 +36,16 @@ const sessions = [{
 
 class GradesScreen extends Component {
 
+  static propTypes = {
+    grades: PropTypes.array,
+    session: PropTypes.string,
+    routeEvents: PropTypes.object,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      session: '20151',
+      session: props.session,
       dataSource: ds.cloneWithRows(props.grades),
       loading: true,
     };
@@ -66,17 +72,7 @@ class GradesScreen extends Component {
     dialog.set({
       title: 'Pick a session',
       items: sessions.map(s => s.title),
-      itemsCallbackSingleChoice: (selectedIndex) => {
-        const session = sessions[selectedIndex].value;
-        if (session !== this.state.session) {
-          this.setState({
-            session: sessions[selectedIndex].value,
-            loading: true,
-          }, () => {
-            this.onReload();
-          });
-        }
-      },
+      itemsCallbackSingleChoice: this.onSessionChange.bind(this),
       selectedIndex: sessions.findIndex(s => s.value === this.state.session),
     });
     dialog.show();
@@ -88,12 +84,19 @@ class GradesScreen extends Component {
     );
   }
 
-  onSessionChange(session) {
-    this.setState({
-      session,
-    }, () => {
-      this.onReload();
-    });
+  onSessionChange(selectedIndex) {
+    const session = sessions[selectedIndex].value;
+    if (session !== this.state.session) {
+      this.props.dispatch(
+        setGradesSession(session),
+      );
+      this.setState({
+        session: sessions[selectedIndex].value,
+        loading: true,
+      }, () => {
+        this.onReload();
+      });
+    }
   }
 
   renderGrade(g) {
@@ -105,6 +108,14 @@ class GradesScreen extends Component {
       return (
         <View style={styles.center}>
           <Progress />
+        </View>
+      );
+    }
+
+    if (!this.props.grades.length) {
+      return (
+        <View>
+          <Text>No courses for this session.</Text>
         </View>
       );
     }
@@ -122,19 +133,33 @@ class GradesScreen extends Component {
   }
 }
 
-GradesScreen.propTypes = {
-  grades: PropTypes.array,
-  routeEvents: PropTypes.object,
-};
-
 export default connect((state) => ({
   grades: state.grades,
+  session: state.app.gradesSession,
 }))(GradesScreen);
 
 class GradeList extends Component {
 
+  static propTypes = {
+    grades: PropTypes.array.isRequired,
+  };
+
   render() {
     const grades = this.props.grades;
+
+    if (!grades.grades.length) {
+      return (
+        <View>
+          <View style={styles.tableHeader}>
+            <Text>{grades.code} - {grades.group}</Text>
+          </View>
+          <View style={[styles.tableContent, styles.gradeRow]}>
+            <Text>No grades for this course.</Text>
+          </View>
+        </View>
+      );
+    }
+
     const rows = grades.grades.map((g, i) => {
       return (
         <GradeRow
@@ -173,11 +198,14 @@ class GradeList extends Component {
     );
   }
 }
-GradeList.propTypes = {
-  grades: PropTypes.array.isRequired,
-};
 
 class GradeRow extends Component {
+
+  static propTypes = {
+    name: PropTypes.string,
+    result: PropTypes.string,
+    average: PropTypes.string,
+  };
 
   render() {
     return (
@@ -193,11 +221,6 @@ class GradeRow extends Component {
   }
 }
 
-GradeRow.propTypes = {
-  name: PropTypes.string,
-  result: PropTypes.string,
-  average: PropTypes.string,
-};
 const ios = Platform.OS === 'ios';
 const styles = StyleSheet.create({
   center: {

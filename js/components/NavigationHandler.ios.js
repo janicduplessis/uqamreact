@@ -10,16 +10,14 @@ import React, {
 } from 'react-native';
 const TabBarItemIOS = TabBarIOS.Item;
 
-import HomeScreen from './HomeScreen';
-import GradesScreen from './GradesScreen';
-import ScheduleScreen from './ScheduleScreen';
 import colors from '../utils/colors';
+import routes from '../routes';
 
 export default class NavigationHandler extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: 'homeTab',
+      selectedTabIndex: 0,
     };
   }
 
@@ -28,74 +26,36 @@ export default class NavigationHandler extends Component {
   }
 
   render() {
+    const tabs = routes.map((route, i) => {
+      return (
+        <TabBarItemIOS
+          title={route.title}
+          icon={{uri: route.icon, isStatic: true}}
+          accessibilityLabel={route.title}
+          selected={this.state.selectedTabIndex === i}
+          onPress={() => {
+            this.setState({
+              selectedTabIndex: i,
+            });
+          }}>
+          <NavigatorIOS
+            barTintColor={colors.primary}
+            titleTextColor={colors.white}
+            style={styles.container}
+            initialRoute={{
+              title: route.title,
+              component: route.Component,
+            }}
+          />
+        </TabBarItemIOS>
+      );
+    });
     return (
       <TabBarIOS
         selectedTab={this.state.selectedTab}
         tintColor={colors.primary}
       >
-        <TabBarItemIOS
-          name="homeTab"
-          title="Home"
-          icon={{uri: 'homeIcon', isStatic: true}}
-          accessibilityLabel="Home Tab"
-          selected={this.state.selectedTab === 'homeTab'}
-          onPress={() => {
-            this.setState({
-              selectedTab: 'homeTab',
-            });
-          }}>
-          <NavigatorIOS
-            barTintColor={colors.primary}
-            titleTextColor={colors.white}
-            style={styles.container}
-            initialRoute={{
-              title: 'Home',
-              component: HomeScreen,
-            }}
-          />
-        </TabBarItemIOS>
-        <TabBarItemIOS
-          name="gradesTab"
-          title="Grades"
-          icon={{uri: 'gradesIcon', isStatic: true}}
-          accessibilityLabel="Grades Tab"
-          selected={this.state.selectedTab === 'gradesTab'}
-          onPress={() => {
-            this.setState({
-              selectedTab: 'gradesTab',
-            });
-          }}>
-          <NavigatorIOS
-            barTintColor={colors.primary}
-            titleTextColor={colors.white}
-            style={styles.container}
-            initialRoute={{
-              title: 'Grades',
-              component: GradesScreen,
-            }}
-          />
-        </TabBarItemIOS>
-        <TabBarItemIOS
-          name="scheduleTab"
-          title="Schedule"
-          icon={{uri: 'scheduleIcon', isStatic: true}}
-          accessibilityLabel="Home Tab"
-          selected={this.state.selectedTab === 'scheduleTab'}
-          onPress={() => {
-            this.setState({
-              selectedTab: 'scheduleTab',
-            });
-          }}>
-          <NavigatorIOS
-            barTintColor={colors.primary}
-            titleTextColor={colors.white}
-            style={styles.container}
-            initialRoute={{
-              title: 'Schedule',
-              component: ScheduleScreen,
-            }}
-          />
-        </TabBarItemIOS>
+        {tabs}
       </TabBarIOS>
     );
   }
