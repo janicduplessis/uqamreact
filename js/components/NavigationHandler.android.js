@@ -85,7 +85,7 @@ export default class NavigationHandler extends Component {
         renderScene={(route, navigator) =>
           <View style={styles.container}>
             <ToolbarAndroid
-              navIcon={require('../images/icons/menu-white-36.png')}
+              navIcon={require('../images/icons/menu-white-24.png')}
               onIconClicked={() => this.onOpenNavigation()}
               title={route.title}
               titleColor="white"

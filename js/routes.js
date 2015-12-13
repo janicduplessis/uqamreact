@@ -21,7 +21,7 @@ export default [
     title: 'Grades',
     icon: require('./images/icons/school-black-24.png'),
     actions: [{
-      title: 'Change session',
+      title: 'Session',
       icon: require('./images/icons/today-white-24.png'),
       show: 'always',
     }],

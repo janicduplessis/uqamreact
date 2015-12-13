@@ -4,6 +4,7 @@
 import React, {
   PropTypes,
   Component,
+  ActionSheetIOS,
   PixelRatio,
   ListView,
   StyleSheet,
@@ -19,6 +20,7 @@ import Progress from './widgets/Progress';
 import {getGrades, setGradesSession} from '../actions/actionCreators';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+const ios = Platform.OS === 'ios';
 
 const sessions = [{
   title: 'Winter 2015',
@@ -68,14 +70,22 @@ class GradesScreen extends Component {
   }
 
   onActionSelected = () => {
-    const dialog = new DialogAndroid();
-    dialog.set({
-      title: 'Pick a session',
-      items: sessions.map(s => s.title),
-      itemsCallbackSingleChoice: this.onSessionChange.bind(this),
-      selectedIndex: sessions.findIndex(s => s.value === this.state.session),
-    });
-    dialog.show();
+    const selectedIndex = sessions.findIndex(s => s.value === this.state.session);
+    if (ios) {
+      ActionSheetIOS.showActionSheetWithOptions({
+        options: ['Cancel', ...sessions.map(s => s.title)],
+        cancelButtonIndex: 0,
+      }, this.onSessionChange.bind(this));
+    } else {
+      const dialog = new DialogAndroid();
+      dialog.set({
+        title: 'Pick a session',
+        items: sessions.map(s => s.title),
+        itemsCallbackSingleChoice: this.onSessionChange.bind(this),
+        selectedIndex: selectedIndex,
+      });
+      dialog.show();
+    }
   }
 
   onReload() {
@@ -141,7 +151,7 @@ export default connect((state) => ({
 class GradeList extends Component {
 
   static propTypes = {
-    grades: PropTypes.array.isRequired,
+    grades: PropTypes.object.isRequired,
   };
 
   render() {
@@ -221,7 +231,6 @@ class GradeRow extends Component {
   }
 }
 
-const ios = Platform.OS === 'ios';
 const styles = StyleSheet.create({
   center: {
     flex: 1,

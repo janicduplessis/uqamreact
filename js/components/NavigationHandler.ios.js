@@ -3,6 +3,7 @@
  */
 import React, {
   Component,
+  PropTypes,
   NavigatorIOS,
   StyleSheet,
   TabBarIOS,
@@ -14,10 +15,16 @@ import colors from '../utils/colors';
 import routes from '../routes';
 
 export default class NavigationHandler extends Component {
+
+  static propTypes = {
+    route: PropTypes.number.isRequired,
+    onRouteChange: PropTypes.func.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      selectedTabIndex: 0,
+      selectedTabIndex: this.props.route,
     };
   }
 
@@ -27,24 +34,34 @@ export default class NavigationHandler extends Component {
 
   render() {
     const tabs = routes.map((route, i) => {
+      const rightTitle = route.actions &&
+          route.actions[0] && route.actions[0].title;
       return (
         <TabBarItemIOS
+          key={i}
           title={route.title}
-          icon={{uri: route.icon, isStatic: true}}
+          icon={route.icon}
           accessibilityLabel={route.title}
           selected={this.state.selectedTabIndex === i}
           onPress={() => {
+            this.props.onRouteChange(i);
             this.setState({
               selectedTabIndex: i,
             });
           }}>
           <NavigatorIOS
+            tintColor={colors.white}
             barTintColor={colors.primary}
             titleTextColor={colors.white}
             style={styles.container}
             initialRoute={{
               title: route.title,
               component: route.Component,
+              passProps: {routeEvents: route.eventEmitter},
+              rightButtonTitle: rightTitle,
+              onRightButtonPress: () => {
+                route.eventEmitter.emit('action', 0);
+              },
             }}
           />
         </TabBarItemIOS>
@@ -52,7 +69,7 @@ export default class NavigationHandler extends Component {
     });
     return (
       <TabBarIOS
-        selectedTab={this.state.selectedTab}
+        selectedTab={this.state.selectedTabIndex}
         tintColor={colors.primary}
       >
         {tabs}

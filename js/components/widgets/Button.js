@@ -2,40 +2,62 @@
  * @flow
  */
 import React, {
+  Component,
   PropTypes,
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
+  TouchableNativeFeedback,
+  Platform,
 } from 'react-native';
 
 import colors from '../../utils/colors';
 
-export default class Button extends React.Component {
+export default class Button extends Component {
+
+  static propTypes = {
+    flat: PropTypes.bool,
+    onPress: PropTypes.func,
+    children: PropTypes.node,
+  };
+
+  static defaultProps = {
+    flat: false,
+  }
+
   render() {
+    const {flat} = this.props;
+    const FeedbackComponent = Platform.OS === 'ios' ?
+      TouchableOpacity :
+      TouchableNativeFeedback;
     return (
-      <TouchableOpacity
+      <FeedbackComponent
         onPress={this.props.onPress}>
-        <View style={styles.wrapper}>
-          <Text style={styles.text}>{this.props.children}</Text>
+        <View style={[styles.wrapper, flat && styles.flatWrapper]}>
+          <Text style={[styles.text, flat && styles.flatText]}>{this.props.children}</Text>
         </View>
-      </TouchableOpacity>
+      </FeedbackComponent>
     );
   }
 }
 
-Button.propTypes = {
-  onPress: PropTypes.func,
-  children: PropTypes.node,
-};
-
 const styles = StyleSheet.create({
   wrapper: {
-    paddingVertical: 8,
+    paddingVertical: 10,
     paddingHorizontal: 16,
+    backgroundColor: colors.primary,
+    borderRadius: 3,
+  },
+  flatWrapper: {
+    backgroundColor: 'transparent',
   },
   text: {
-    fontSize: 16,
+    fontSize: 18,
+    color: colors.white,
+    textAlign: 'center',
+  },
+  flatText: {
     color: colors.primary,
   },
 });

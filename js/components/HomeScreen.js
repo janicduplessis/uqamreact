@@ -27,7 +27,7 @@ export default class HomeScreen extends Component {
         <Text>
           Hello, {user.firstName} {user.lastName}!
         </Text>
-        <Button onPress={() => this.onLogout()}>Logout</Button>
+        <Button flat onPress={() => this.onLogout()}>Logout</Button>
       </View>
     );
   }

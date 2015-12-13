@@ -45,8 +45,8 @@
                                                       moduleName:@"UqamNativeClient"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
-
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+	self.window.tintColor = [UIColor colorWithRed: 0 green: 150 / 255.0 blue: 136 / 255.0 alpha: 1];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;

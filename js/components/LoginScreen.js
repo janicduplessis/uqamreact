@@ -8,6 +8,7 @@ import React, {
   StyleSheet,
   View,
   TextInput,
+  Text,
   Platform,
   StatusBarIOS,
 } from 'react-native';
@@ -60,12 +61,16 @@ class LoginScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Text style={styles.title}>UQAM Portal</Text>
         <View>
           <TextInput
             style={[styles.default, styles.username]}
             underlineColorAndroid={colors.primary}
             placeholder="Code"
             autoCorrect={false}
+            autoCapitalize="characters"
+            returnKeyType="next"
+            maxLength={12}
             value={this.state.code}
             onChange={(event) => this.setState({code: event.nativeEvent.text})}
           />
@@ -74,6 +79,9 @@ class LoginScreen extends Component {
             underlineColorAndroid={colors.primary}
             placeholder="Nip"
             password
+            keyboardType="numeric"
+            returnKeyType="go"
+            maxLength={20}
             value={this.state.nip}
             onChange={(event) => this.setState({nip: event.nativeEvent.text})}
           />
@@ -100,6 +108,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     padding: 8,
   },
+  title: {
+    marginTop: 32,
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: colors.textDark,
+    textAlign: 'center',
+  },
   default: {
     height: 54,
     borderColor: colors.grayMedium,
@@ -108,7 +123,7 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
   },
   username: {
-    marginTop: 75,
+    marginTop: 50,
   },
   password: {
     marginTop: 16,

@@ -3,4 +3,5 @@ export default {
   white: '#ffffff',
   grayLight: '#eeeeee',
   grayMedium: '#cccccc',
+  textDark: '#333333',
 };
