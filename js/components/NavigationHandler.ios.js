@@ -52,6 +52,7 @@ export default class NavigationHandler extends Component {
           <NavigatorIOS
             tintColor={colors.white}
             barTintColor={colors.primary}
+            translucent={false}
             titleTextColor={colors.white}
             style={styles.container}
             initialRoute={{

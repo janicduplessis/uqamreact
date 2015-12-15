@@ -56,9 +56,9 @@ export default class NavigationHandler extends Component {
           key={i}
           onPress={() => this.onNavigationItemClick(i)}
         >
-          <View style={styles.navigationListItem}>
+          <View style={[styles.navigationListItem, selected && styles.navigationListItemSelected]}>
             <Image source={route.icon} style={[styles.navigationListIcon, selected && styles.navigationListIconSelected]} />
-            <Text style={selected && styles.navigationListItemSelected}>
+            <Text style={selected && styles.navigationListTextSelected}>
               {route.title}
             </Text>
           </View>
@@ -67,8 +67,11 @@ export default class NavigationHandler extends Component {
     });
 
     return (
-      <View style={styles.navigationList}>
-        {listItems}
+      <View style={styles.navigation}>
+        <Text style={styles.navigationTitle}>UQAM Portal</Text>
+        <View style={styles.navigationList}>
+          {listItems}
+        </View>
       </View>
     );
   }
@@ -145,10 +148,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     height: 56,
   },
+  navigation: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  navigationTitle: {
+    marginTop: 16,
+    marginBottom: 8,
+    marginHorizontal: 16,
+    fontSize: 22,
+  },
   navigationList: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'white',
   },
   navigationListItem: {
     flexDirection: 'row',
@@ -156,6 +168,9 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   navigationListItemSelected: {
+    backgroundColor: colors.grayLight,
+  },
+  navigationListTextSelected: {
     color: colors.primary,
     fontWeight: 'bold',
   },

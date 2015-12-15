@@ -4,13 +4,14 @@ import {
   SET_GRADES_SESSION,
 } from '../actions/actionCreators';
 import AppUtils from '../utils/AppUtils';
+import {getCurrentSession} from '../utils/SessionUtils';
 
 export default function app(state = null, action) {
   switch (action.type) {
   case LOAD_APP_DATA_SUCCESS: {
     const data = action.data || {};
     data.route = data.route || 0;
-    data.gradesSession = data.gradesSession || '20153';
+    data.gradesSession = data.gradesSession || getCurrentSession(new Date());
     return data;
   }
   case SET_CURRENT_ROUTE: {

@@ -10,6 +10,7 @@ import React, {
   StyleSheet,
   View,
   Text,
+  PullToRefreshViewAndroid,
   Platform,
 } from 'react-native';
 import {connect} from 'react-redux/native';
@@ -17,24 +18,14 @@ import DialogAndroid from 'react-native-dialogs';
 
 import colors from '../utils/colors';
 import Progress from './widgets/Progress';
+import Button from './widgets/Button';
 import {getGrades, setGradesSession} from '../actions/actionCreators';
+import {getCurrentSessions, getSessionName} from '../utils/SessionUtils';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 const ios = Platform.OS === 'ios';
 
-const sessions = [{
-  title: 'Winter 2015',
-  value: '20151',
-}, {
-  title: 'Summer 2015',
-  value: '20152',
-}, {
-  title: 'Fall 2015',
-  value: '20153',
-}, {
-  title: 'Winter 2016',
-  value: '20161',
-}];
+const sessions = getCurrentSessions(new Date());
 
 class GradesScreen extends Component {
 
@@ -50,6 +41,7 @@ class GradesScreen extends Component {
       session: props.session,
       dataSource: ds.cloneWithRows(props.grades),
       loading: true,
+      refreshing: false,
     };
   }
 
@@ -62,26 +54,32 @@ class GradesScreen extends Component {
     this.setState({
       dataSource: ds.cloneWithRows(newProps.grades),
       loading: false,
+      refreshing: false,
     });
+    if (this._endRefreshing) {
+      this._endRefreshing();
+      this._endRefreshing = null;
+    }
   }
 
   componentWillUnmount() {
     this.props.routeEvents.off('action', this.onActionSelected);
+    this._endRefreshing = null;
   }
 
   onActionSelected = () => {
-    const selectedIndex = sessions.findIndex(s => s.value === this.state.session);
+    const selectedIndex = sessions.findIndex(s => s === this.state.session);
     if (ios) {
       ActionSheetIOS.showActionSheetWithOptions({
-        options: ['Cancel', ...sessions.map(s => s.title)],
+        options: ['Cancel', ...sessions.map(s => getSessionName(s))],
         cancelButtonIndex: 0,
-      }, this.onSessionChange.bind(this));
+      }, (index) => this.onSessionChange(index - 1));
     } else {
       const dialog = new DialogAndroid();
       dialog.set({
         title: 'Pick a session',
-        items: sessions.map(s => s.title),
-        itemsCallbackSingleChoice: this.onSessionChange.bind(this),
+        items: sessions.map(s => getSessionName(s)),
+        itemsCallbackSingleChoice: (index) => this.onSessionChange(index),
         selectedIndex: selectedIndex,
       });
       dialog.show();
@@ -94,14 +92,19 @@ class GradesScreen extends Component {
     );
   }
 
+  onRefresh() {
+    this.setState({refreshing: true});
+    this.onReload();
+  }
+
   onSessionChange(selectedIndex) {
-    const session = sessions[selectedIndex].value;
+    const session = sessions[selectedIndex];
     if (session !== this.state.session) {
       this.props.dispatch(
         setGradesSession(session),
       );
       this.setState({
-        session: sessions[selectedIndex].value,
+        session: sessions[selectedIndex],
         loading: true,
       }, () => {
         this.onReload();
@@ -111,6 +114,16 @@ class GradesScreen extends Component {
 
   renderGrade(g) {
     return <GradeList grades={g} />;
+  }
+
+  renderHeader() {
+    return (
+      <View>
+        <Text style={styles.listHeader}>
+          {getSessionName(sessions.find(s => s === this.state.session))}
+        </Text>
+      </View>
+    );
   }
 
   render() {
@@ -124,20 +137,49 @@ class GradesScreen extends Component {
 
     if (!this.props.grades.length) {
       return (
-        <View>
-          <Text>No courses for this session.</Text>
+        <View style={{alignItems: 'center'}}>
+          <Text style={styles.noCourses}>No courses for this session.</Text>
+          <Button
+            flat
+            onPress={this.onActionSelected.bind(this)}
+          >
+            Change session
+          </Button>
         </View>
       );
     }
 
+    const listView = (
+      <ListView
+        contentContainerStyle={styles.content}
+        style={styles.container}
+        dataSource={this.state.dataSource}
+        onRefreshStart={(endRefreshing) => {
+          this._endRefreshing = endRefreshing;
+          this.onRefresh();
+        }}
+        renderRow={this.renderGrade}
+        renderHeader={this.renderHeader.bind(this)}
+      />
+    );
+
+    if (ios) {
+      return (
+        <View style={styles.container}>
+          {listView}
+        </View>
+      );
+    }
     return (
       <View style={styles.container}>
-        <ListView
-          contentContainerStyle={styles.content}
-          style={styles.container}
-          dataSource={this.state.dataSource}
-          renderRow={this.renderGrade}
-        />
+        <PullToRefreshViewAndroid
+          colors={[colors.primary]}
+          refreshing={this.state.refreshing}
+          onRefresh={() => this.onRefresh()}
+          style={{flex: 1}}
+        >
+          {listView}
+        </PullToRefreshViewAndroid>
       </View>
     );
   }
@@ -243,8 +285,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grayLight,
   },
   content: {
-    paddingTop: ios ? 64 : 0,
     paddingBottom: ios ? 65 : 16,
+  },
+  listHeader: {
+    marginTop: 8,
+    marginHorizontal: 8,
+    fontSize: 20,
+  },
+  noCourses: {
+    marginTop: 32,
+    marginBottom: 8,
+    fontSize: 18,
   },
   tableHeader: {
     paddingVertical: 16,
