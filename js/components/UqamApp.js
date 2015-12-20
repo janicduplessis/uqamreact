@@ -15,6 +15,11 @@ import NavigationHandler from './NavigationHandler';
 
 class UqamApp extends Component {
 
+  static propTypes = {
+    user: PropTypes.object,
+    appData: PropTypes.object,
+  };
+
   componentDidMount() {
     this.props.dispatch(
       loadUser(),
@@ -44,11 +49,6 @@ class UqamApp extends Component {
     );
   }
 }
-
-UqamApp.propTypes = {
-  user: PropTypes.object,
-  appData: PropTypes.object,
-};
 
 export default connect((state) => {
   return {
