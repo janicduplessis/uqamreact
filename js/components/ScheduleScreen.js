@@ -86,7 +86,10 @@ class ScheduleScreen extends Component {
             {
               j !== 0 ? <View style={listStyles.separator} /> : null
             }
-            <Text style={styles.day}>{p.day}</Text>
+            <View style={styles.dayRow}>
+              <Text style={styles.day}>{p.day}</Text>
+              <Text>{p.note}</Text>
+            </View>
             <View style={styles.timeRow}>
               <Text style={styles.time}>{p.start} - {p.end}</Text>
               <Text>{p.locals.join(', ')}</Text>
@@ -95,10 +98,8 @@ class ScheduleScreen extends Component {
         );
       });
       return (
-        <View key={i}>
-          <View style={listStyles.header}>
-            <Text>{c.title}</Text>
-          </View>
+        <View key={i} style={listStyles.item}>
+          <Text style={listStyles.header}>{c.title}</Text>
           <View style={listStyles.content}>
             {periodsList}
           </View>
@@ -161,14 +162,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   session: {
-    marginTop: 8,
+    marginVertical: 8,
     marginHorizontal: 8,
     fontSize: 20,
+  },
+  dayRow: {
+    flexDirection: 'row',
   },
   timeRow: {
     flexDirection: 'row',
   },
   day: {
+    flex: 1,
     fontWeight: 'bold',
   },
   time: {

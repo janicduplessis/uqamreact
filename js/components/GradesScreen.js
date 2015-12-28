@@ -96,7 +96,7 @@ class GradesScreen extends Component {
   renderHeader() {
     return (
       <View>
-        <Text style={styles.listHeader}>
+        <Text style={styles.session}>
           {getSessionName(this.state.session)}
         </Text>
       </View>
@@ -200,10 +200,8 @@ class GradeList extends Component {
 
     if (!grades.grades.length) {
       return (
-        <View>
-          <View style={listStyles.header}>
-            <Text>{grades.code} - {grades.group}</Text>
-          </View>
+        <View style={listStyles.item}>
+          <Text style={listStyles.header}>{grades.code} - {grades.group}</Text>
           <View style={[listStyles.content, styles.gradeRow]}>
             <Text>No grades for this course.</Text>
           </View>
@@ -228,10 +226,8 @@ class GradeList extends Component {
         average=" " /> : null;
 
     return (
-      <View>
-        <View style={listStyles.header}>
-          <Text>{grades.code} - {grades.group}</Text>
-        </View>
+      <View style={listStyles.item}>
+        <Text style={listStyles.header}>{grades.code} - {grades.group}</Text>
         <View style={listStyles.content}>
           <View style={[styles.rowCells, styles.gradeRow]}>
             <Text style={[styles.gradeCell, styles.headerText]}>Name</Text>
@@ -282,8 +278,8 @@ const styles = StyleSheet.create({
   content: {
     paddingBottom: ios ? 65 : 16,
   },
-  listHeader: {
-    marginTop: 8,
+  session: {
+    marginVertical: 8,
     marginHorizontal: 8,
     fontSize: 20,
   },

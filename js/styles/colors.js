@@ -3,5 +3,6 @@ export default {
   white: '#ffffff',
   grayLight: '#eeeeee',
   grayMedium: '#cccccc',
-  textDark: '#333333',
+  title: 'rgba(0, 0, 0, 221)',
+  subtitle: 'rgba(0, 0, 0, 137)',
 };
