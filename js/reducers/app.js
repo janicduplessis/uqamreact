@@ -2,7 +2,7 @@ import {
   LOAD_APP_DATA_SUCCESS,
   SET_CURRENT_ROUTE,
   SET_GRADES_SESSION,
-} from '../actions/actionCreators';
+} from '../actions/appActions';
 import AppUtils from '../utils/AppUtils';
 import {getCurrentSession} from '../utils/SessionUtils';
 

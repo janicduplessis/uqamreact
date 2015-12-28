@@ -190,14 +190,23 @@ export default {
             // TODO: support more than one program.
             const coursesNode = s.programme[0].cours;
             const courses = coursesNode.map((c) => {
-              const schedule = c.horaire.map((h) => {
-                return {
+              const schedule = [];
+              c.horaire.forEach((h) => {
+                const newPeriod = {
                   start: h.hr_deb,
                   end: h.hr_fin,
                   day: h.jour,
-                  local: h.local,
+                  locals: [h.local],
                   note: h.mode_util,
                 };
+                // Sometimes we have the same period multiple times in different locals.
+                const samePeriod = schedule.find(p => p.start === newPeriod.start &&
+                    p.end === newPeriod.end && p.day === newPeriod.day);
+                if (samePeriod) {
+                  samePeriod.locals.push(h.local);
+                } else {
+                  schedule.push(newPeriod);
+                }
               });
               return {
                 title: c.titre,
@@ -214,8 +223,7 @@ export default {
           });
           resolve(schedules);
         })
-        .catch(reject)
-        .done();
+        .catch(reject);
     });
   },
 };

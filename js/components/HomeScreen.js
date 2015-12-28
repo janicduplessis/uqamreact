@@ -10,10 +10,15 @@ import React, {
 } from 'react-native';
 import {connect} from 'react-redux/native';
 
-import {logout} from '../actions/actionCreators';
+import {logout} from '../actions/userActions';
 import Button from './widgets/Button';
 
 export default class HomeScreen extends Component {
+
+  static propTypes = {
+    user: PropTypes.object.isRequired,
+  };
+
   onLogout() {
     this.props.dispatch(
       logout(),
@@ -33,15 +38,9 @@ export default class HomeScreen extends Component {
   }
 }
 
-HomeScreen.propTypes = {
-  user: PropTypes.object.isRequired,
-};
-
-export default connect((state) => {
-  return {
-    user: state.user,
-  };
-})(HomeScreen);
+export default connect((state) => ({
+  user: state.user,
+}))(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {

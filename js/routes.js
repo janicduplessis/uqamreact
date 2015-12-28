@@ -29,5 +29,10 @@ export default [
   new Route(ScheduleScreen, {
     title: 'Schedule',
     icon: require('./images/icons/today-black-24.png'),
+    actions: [{
+      title: 'Session',
+      icon: require('./images/icons/today-white-24.png'),
+      show: 'always',
+    }],
   }),
 ];

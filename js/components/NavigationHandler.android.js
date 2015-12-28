@@ -14,7 +14,7 @@ import React, {
   StyleSheet,
 } from 'react-native';
 
-import colors from '../utils/colors';
+import colors from '../styles/colors';
 import routes from '../routes';
 
 export default class NavigationHandler extends Component {
@@ -24,12 +24,9 @@ export default class NavigationHandler extends Component {
     onRouteChange: PropTypes.func.isRequired,
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      selected: props.route,
-    };
-  }
+  state = {
+    selected: this.props.route,
+  };
 
   onOpenNavigation() {
     this.refs.drawer.openDrawer();

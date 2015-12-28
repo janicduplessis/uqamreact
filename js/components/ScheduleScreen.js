@@ -3,67 +3,179 @@
  */
 import React, {
   Component,
-  ActivityIndicatorIOS,
+  PropTypes,
   StyleSheet,
   View,
   Text,
   ScrollView,
 } from 'react-native';
+import {connect} from 'react-redux/native';
+
+import Button from './widgets/Button';
+import Progress from './widgets/Progress';
+import SessionPickerDialog from './SessionPickerDialog';
+import {getSchedule} from '../actions/scheduleActions';
+import {getSessionName} from '../utils/SessionUtils';
+import colors from '../styles/colors';
+import listStyles from '../styles/list';
 
 class ScheduleScreen extends Component {
-  constructor(props) {
-    super(props);
 
-    this.state = {
-      loading: true,
-      schedule: null,
-    };
+  static propTypes = {
+    schedule: PropTypes.array,
+    routeEvents: PropTypes.object,
   }
 
+  state = {
+    loading: true,
+    session: '20161',
+  };
+
   componentDidMount() {
+    this.props.routeEvents.on('action', this.onActionSelected);
+    this.props.dispatch(
+      getSchedule(),
+    );
+  }
+
+  componentWillReceiveProps() {
+    this.setState({
+      loading: false,
+    });
   }
 
   componentWillUnmount() {
+    this.props.routeEvents.off('action', this.onActionSelected);
   }
 
-  render() {
-    if (this.state.loading) {
-      return (
-        <View style={styles.center}>
-          <ActivityIndicatorIOS
-            size="large" />
-        </View>
-      );
-    }
-    const courseList = this.state.schedule.toJS().courses.map((c, i) => {
+  onActionSelected = () => {
+    this._dialog.show();
+  }
+
+  onSessionChange(session) {
+    this.setState({session});
+  }
+
+  renderProgress() {
+    return (
+      <View style={styles.center}>
+        <Progress />
+      </View>
+    );
+  }
+
+  renderNoCourses() {
+    return (
+      <View style={styles.noCoursesContainer}>
+        <Text style={styles.noCourses}>No courses for this session.</Text>
+        <Button
+          flat
+          onPress={() => this.onActionSelected()}
+        >
+          Change session
+        </Button>
+      </View>
+    );
+  }
+
+  renderSchedule(schedule) {
+    const courseList = schedule.courses.map((c, i) => {
       const periodsList = c.schedule.map((p, j) => {
         return (
           <View key={j}>
-            <Text>{p.day}</Text>
-            <Text>{p.start} - {p.end}</Text>
-            <Text>{p.local}</Text>
+            {
+              j !== 0 ? <View style={listStyles.separator} /> : null
+            }
+            <Text style={styles.day}>{p.day}</Text>
+            <View style={styles.timeRow}>
+              <Text style={styles.time}>{p.start} - {p.end}</Text>
+              <Text>{p.locals.join(', ')}</Text>
+            </View>
           </View>
         );
       });
       return (
         <View key={i}>
-          <Text>{c.title}</Text>
-          <View>{periodsList}</View>
+          <View style={listStyles.header}>
+            <Text>{c.title}</Text>
+          </View>
+          <View style={listStyles.content}>
+            {periodsList}
+          </View>
         </View>
       );
     });
     return (
       <ScrollView style={styles.container}>
+        <Text style={styles.session}>
+          {getSessionName(this.state.session)}
+        </Text>
         {courseList}
       </ScrollView>
+    );
+  }
+
+  render() {
+    let content;
+    if (this.state.loading) {
+      content = this.renderProgress();
+    } else {
+      const schedule = this.props.schedule.find(s => s.session === this.state.session);
+      if (!schedule || !schedule.courses.length) {
+        content = this.renderNoCourses();
+      } else {
+        content = this.renderSchedule(schedule);
+      }
+    }
+    return (
+      <View style={[styles.container, styles.background]}>
+        <SessionPickerDialog
+          session={this.state.session}
+          onSessionChange={(s) => this.onSessionChange(s)}
+          ref={c => this._dialog = c}
+        />
+        {content}
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#eeeeee',
+    flex: 1,
+  },
+  background: {
+    backgroundColor: colors.grayLight,
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noCoursesContainer: {
+    alignItems: 'center',
+  },
+  noCourses: {
+    marginTop: 32,
+    marginBottom: 8,
+    fontSize: 18,
+  },
+  session: {
+    marginTop: 8,
+    marginHorizontal: 8,
+    fontSize: 20,
+  },
+  timeRow: {
+    flexDirection: 'row',
+  },
+  day: {
+    fontWeight: 'bold',
+  },
+  time: {
+    flex: 1,
   },
 });
 
-module.exports = ScheduleScreen;
+export default connect((state) => ({
+  schedule: state.schedule,
+}))(ScheduleScreen);

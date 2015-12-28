@@ -11,7 +11,7 @@ import React, {
 } from 'react-native';
 const TabBarItemIOS = TabBarIOS.Item;
 
-import colors from '../utils/colors';
+import colors from '../styles/colors';
 import routes from '../routes';
 
 export default class NavigationHandler extends Component {

@@ -4,8 +4,6 @@
 import React, {
   PropTypes,
   Component,
-  ActionSheetIOS,
-  PixelRatio,
   ListView,
   StyleSheet,
   View,
@@ -14,18 +12,18 @@ import React, {
   Platform,
 } from 'react-native';
 import {connect} from 'react-redux/native';
-import DialogAndroid from 'react-native-dialogs';
 
-import colors from '../utils/colors';
 import Progress from './widgets/Progress';
 import Button from './widgets/Button';
-import {getGrades, setGradesSession} from '../actions/actionCreators';
-import {getCurrentSessions, getSessionName} from '../utils/SessionUtils';
+import SessionPickerDialog from './SessionPickerDialog';
+import {getGrades} from '../actions/gradesActions';
+import {setGradesSession} from '../actions/appActions';
+import {getSessionName} from '../utils/SessionUtils';
+import colors from '../styles/colors';
+import listStyles from '../styles/list';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 const ios = Platform.OS === 'ios';
-
-const sessions = getCurrentSessions(new Date());
 
 class GradesScreen extends Component {
 
@@ -35,15 +33,12 @@ class GradesScreen extends Component {
     routeEvents: PropTypes.object,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      session: props.session,
-      dataSource: ds.cloneWithRows(props.grades),
-      loading: true,
-      refreshing: false,
-    };
-  }
+  state = {
+    session: this.props.session,
+    dataSource: ds.cloneWithRows(this.props.grades),
+    loading: true,
+    refreshing: false,
+  };
 
   componentDidMount() {
     this.props.routeEvents.on('action', this.onActionSelected);
@@ -68,22 +63,7 @@ class GradesScreen extends Component {
   }
 
   onActionSelected = () => {
-    const selectedIndex = sessions.findIndex(s => s === this.state.session);
-    if (ios) {
-      ActionSheetIOS.showActionSheetWithOptions({
-        options: ['Cancel', ...sessions.map(s => getSessionName(s))],
-        cancelButtonIndex: 0,
-      }, (index) => this.onSessionChange(index - 1));
-    } else {
-      const dialog = new DialogAndroid();
-      dialog.set({
-        title: 'Pick a session',
-        items: sessions.map(s => getSessionName(s)),
-        itemsCallbackSingleChoice: (index) => this.onSessionChange(index),
-        selectedIndex: selectedIndex,
-      });
-      dialog.show();
-    }
+    this._dialog.show();
   }
 
   onReload() {
@@ -97,19 +77,16 @@ class GradesScreen extends Component {
     this.onReload();
   }
 
-  onSessionChange(selectedIndex) {
-    const session = sessions[selectedIndex];
-    if (session !== this.state.session) {
-      this.props.dispatch(
-        setGradesSession(session),
-      );
-      this.setState({
-        session: sessions[selectedIndex],
-        loading: true,
-      }, () => {
-        this.onReload();
-      });
-    }
+  onSessionChange(session) {
+    this.props.dispatch(
+      setGradesSession(session),
+    );
+    this.setState({
+      session: session,
+      loading: true,
+    }, () => {
+      this.onReload();
+    });
   }
 
   renderGrade(g) {
@@ -120,35 +97,35 @@ class GradesScreen extends Component {
     return (
       <View>
         <Text style={styles.listHeader}>
-          {getSessionName(sessions.find(s => s === this.state.session))}
+          {getSessionName(this.state.session)}
         </Text>
       </View>
     );
   }
 
-  render() {
-    if (this.state.loading) {
-      return (
-        <View style={styles.center}>
-          <Progress />
-        </View>
-      );
-    }
+  renderProgress() {
+    return (
+      <View style={styles.center}>
+        <Progress />
+      </View>
+    );
+  }
 
-    if (!this.props.grades.length) {
-      return (
-        <View style={{alignItems: 'center'}}>
-          <Text style={styles.noCourses}>No courses for this session.</Text>
-          <Button
-            flat
-            onPress={this.onActionSelected.bind(this)}
-          >
-            Change session
-          </Button>
-        </View>
-      );
-    }
+  renderNoCourses() {
+    return (
+      <View style={styles.noCoursesContainer}>
+        <Text style={styles.noCourses}>No courses for this session.</Text>
+        <Button
+          flat
+          onPress={() => this.onActionSelected()}
+        >
+          Change session
+        </Button>
+      </View>
+    );
+  }
 
+  renderGrades() {
     const listView = (
       <ListView
         contentContainerStyle={styles.content}
@@ -159,7 +136,7 @@ class GradesScreen extends Component {
           this.onRefresh();
         }}
         renderRow={this.renderGrade}
-        renderHeader={this.renderHeader.bind(this)}
+        renderHeader={() => this.renderHeader()}
       />
     );
 
@@ -183,6 +160,28 @@ class GradesScreen extends Component {
       </View>
     );
   }
+
+  render() {
+    let content;
+    if (this.state.loading) {
+      content = this.renderProgress();
+    } else if (!this.props.grades.length) {
+      content = this.renderNoCourses();
+    } else {
+      content = this.renderGrades();
+    }
+
+    return (
+      <View style={[styles.container, styles.background]}>
+        <SessionPickerDialog
+          session={this.state.session}
+          onSessionChange={(s) => this.onSessionChange(s)}
+          ref={c => this._dialog = c}
+        />
+        {content}
+      </View>
+    );
+  }
 }
 
 export default connect((state) => ({
@@ -202,10 +201,10 @@ class GradeList extends Component {
     if (!grades.grades.length) {
       return (
         <View>
-          <View style={styles.tableHeader}>
+          <View style={listStyles.header}>
             <Text>{grades.code} - {grades.group}</Text>
           </View>
-          <View style={[styles.tableContent, styles.gradeRow]}>
+          <View style={[listStyles.content, styles.gradeRow]}>
             <Text>No grades for this course.</Text>
           </View>
         </View>
@@ -230,10 +229,10 @@ class GradeList extends Component {
 
     return (
       <View>
-        <View style={styles.tableHeader}>
+        <View style={listStyles.header}>
           <Text>{grades.code} - {grades.group}</Text>
         </View>
-        <View style={styles.tableContent}>
+        <View style={listStyles.content}>
           <View style={[styles.rowCells, styles.gradeRow]}>
             <Text style={[styles.gradeCell, styles.headerText]}>Name</Text>
             <Text style={[styles.gradeCell, styles.headerText]}>Result</Text>
@@ -251,37 +250,33 @@ class GradeList extends Component {
   }
 }
 
-class GradeRow extends Component {
+const GradeRow = ({name, result, average}) => (
+  <View style={styles.gradeRow}>
+    <View style={listStyles.separator} />
+    <View style={styles.rowCells}>
+      <Text style={styles.gradeCell}>{name}</Text>
+      <Text style={styles.gradeCell}>{result}</Text>
+      <Text style={styles.gradeCell}>{average || 'N/A'}</Text>
+    </View>
+  </View>
+);
 
-  static propTypes = {
-    name: PropTypes.string,
-    result: PropTypes.string,
-    average: PropTypes.string,
-  };
-
-  render() {
-    return (
-      <View style={styles.gradeRow}>
-        <View style={styles.separator} />
-        <View style={styles.rowCells}>
-          <Text style={styles.gradeCell}>{this.props.name}</Text>
-          <Text style={styles.gradeCell}>{this.props.result}</Text>
-          <Text style={styles.gradeCell}>{this.props.average || 'N/A'}</Text>
-        </View>
-      </View>
-    );
-  }
-}
+GradeRow.propTypes = {
+  name: PropTypes.string,
+  result: PropTypes.string,
+  average: PropTypes.string,
+};
 
 const styles = StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.grayLight,
   },
   container: {
     flex: 1,
+  },
+  background: {
     backgroundColor: colors.grayLight,
   },
   content: {
@@ -292,24 +287,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     fontSize: 20,
   },
+  noCoursesContainer: {
+    alignItems: 'center',
+  },
   noCourses: {
     marginTop: 32,
     marginBottom: 8,
     fontSize: 18,
-  },
-  tableHeader: {
-    paddingVertical: 16,
-    paddingHorizontal: 8,
-  },
-  tableContent: {
-    backgroundColor: colors.white,
-    borderColor: colors.grayMedium,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    paddingVertical: 8,
-  },
-  gradeRow: {
-    paddingHorizontal: 8,
   },
   rowCells: {
     flexDirection: 'row',
@@ -319,10 +303,5 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontWeight: 'bold',
-  },
-  separator: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    height: 1 / PixelRatio.get(),
-    marginVertical: 8,
   },
 });

@@ -15,21 +15,18 @@ import React, {
 import {connect} from 'react-redux/native';
 
 import Button from './widgets/Button';
-import colors from '../utils/colors';
+import colors from '../styles/colors';
 
-import {login} from '../actions/actionCreators';
+import {login} from '../actions/userActions';
 
 const ios = Platform.OS === 'ios';
 
 class LoginScreen extends Component {
-  constructor(props) {
-    super(props);
 
-    this.state = {
-      code: '',
-      nip: '',
-    };
-  }
+  state = {
+    code: '',
+    nip: '',
+  };
 
   componentDidMount() {
     if (ios) {

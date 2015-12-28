@@ -8,7 +8,8 @@ import React, {
 } from 'react-native';
 import {connect} from 'react-redux/native';
 
-import {loadUser, loadAppData, setCurrentRoute} from '../actions/actionCreators';
+import {loadAppData, setCurrentRoute} from '../actions/appActions';
+import {loadUser} from '../actions/userActions';
 
 import LoginScreen from './LoginScreen';
 import NavigationHandler from './NavigationHandler';
@@ -50,9 +51,7 @@ class UqamApp extends Component {
   }
 }
 
-export default connect((state) => {
-  return {
-    user: state.user,
-    appData: state.app,
-  };
-})(UqamApp);
+export default connect((state) => ({
+  user: state.user,
+  appData: state.app,
+}))(UqamApp);

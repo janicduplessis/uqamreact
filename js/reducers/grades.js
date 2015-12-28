@@ -1,4 +1,4 @@
-import {GET_GRADES_SUCCESS} from '../actions/actionCreators';
+import {GET_GRADES_SUCCESS} from '../actions/gradesActions';
 
 export default function grades(state = [], action) {
   switch (action.type) {

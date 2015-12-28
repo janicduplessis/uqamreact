@@ -1,4 +1,4 @@
-import {LOGIN_RESPONSE, USER_LOADED} from '../actions/actionCreators';
+import {LOGIN_RESPONSE, USER_LOADED} from '../actions/userActions';
 
 export default function user(state = null, action) {
   switch (action.type) {
