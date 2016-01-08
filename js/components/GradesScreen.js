@@ -8,7 +8,7 @@ import React, {
   StyleSheet,
   View,
   Text,
-  PullToRefreshViewAndroid,
+  RefreshControl,
   Platform,
 } from 'react-native';
 import {connect} from 'react-redux/native';
@@ -51,15 +51,10 @@ class GradesScreen extends Component {
       loading: false,
       refreshing: false,
     });
-    if (this._endRefreshing) {
-      this._endRefreshing();
-      this._endRefreshing = null;
-    }
   }
 
   componentWillUnmount() {
     this.props.routeEvents.off('action', this.onActionSelected);
-    this._endRefreshing = null;
   }
 
   onActionSelected = () => {
@@ -126,37 +121,22 @@ class GradesScreen extends Component {
   }
 
   renderGrades() {
-    const listView = (
-      <ListView
-        contentContainerStyle={styles.content}
-        style={styles.container}
-        dataSource={this.state.dataSource}
-        onRefreshStart={(endRefreshing) => {
-          this._endRefreshing = endRefreshing;
-          this.onRefresh();
-        }}
-        renderRow={this.renderGrade}
-        renderHeader={() => this.renderHeader()}
-      />
-    );
-
-    if (ios) {
-      return (
-        <View style={styles.container}>
-          {listView}
-        </View>
-      );
-    }
     return (
       <View style={styles.container}>
-        <PullToRefreshViewAndroid
-          colors={[colors.primary]}
-          refreshing={this.state.refreshing}
-          onRefresh={() => this.onRefresh()}
-          style={{flex: 1}}
-        >
-          {listView}
-        </PullToRefreshViewAndroid>
+        <ListView
+          contentContainerStyle={styles.content}
+          style={styles.container}
+          dataSource={this.state.dataSource}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={() => this.onRefresh()}
+              colors={[colors.primary]}
+            />
+          }
+          renderRow={this.renderGrade}
+          renderHeader={() => this.renderHeader()}
+        />
       </View>
     );
   }
