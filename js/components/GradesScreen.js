@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grayLight,
   },
   content: {
-    paddingBottom: ios ? 65 : 16,
+    paddingBottom: ios ? 132 : 16,
   },
   session: {
     marginVertical: 8,

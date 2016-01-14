@@ -101,6 +101,8 @@ class ScheduleScreen extends Component {
         <View key={i} style={listStyles.item}>
           <Text style={listStyles.header}>{c.title}</Text>
           <View style={listStyles.content}>
+            <Text style={styles.teacher}>{c.teacher}</Text>
+            <View style={listStyles.separator} />
             {periodsList}
           </View>
         </View>
@@ -165,6 +167,10 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 8,
     fontSize: 20,
+  },
+  teacher: {
+    fontSize: 14,
+    marginVertical: 8,
   },
   dayRow: {
     flexDirection: 'row',
