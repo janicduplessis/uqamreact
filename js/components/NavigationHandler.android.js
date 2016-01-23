@@ -22,7 +22,7 @@ export default class NavigationHandler extends Component {
   static propTypes = {
     route: PropTypes.number.isRequired,
     onRouteChange: PropTypes.func.isRequired,
-  }
+  };
 
   state = {
     selected: this.props.route,

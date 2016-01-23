@@ -24,7 +24,7 @@ export default class Button extends Component {
 
   static defaultProps = {
     flat: false,
-  }
+  };
 
   render() {
     const {flat} = this.props;

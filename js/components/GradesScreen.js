@@ -59,7 +59,7 @@ class GradesScreen extends Component {
 
   onActionSelected = () => {
     this._dialog.show();
-  }
+  };
 
   onReload() {
     this.props.dispatch(
