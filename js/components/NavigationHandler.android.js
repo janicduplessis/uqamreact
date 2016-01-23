@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
   toolbar: {
     backgroundColor: colors.primary,
     height: 56,
+    elevation: 5,
   },
   navigation: {
     flex: 1,
