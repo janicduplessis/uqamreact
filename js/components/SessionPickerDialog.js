@@ -21,7 +21,7 @@ export default class SessionPickerDialog extends Component {
   static defaultProps = {
     opened: false,
     onSessionChange: () => {},
-  }
+  };
 
   componentDidReceiveProps(newProps) {
     if (!this.props.opened && newProps.opened) {

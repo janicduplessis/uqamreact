@@ -21,12 +21,9 @@ export default class NavigationHandler extends Component {
     onRouteChange: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedTabIndex: this.props.route,
-    };
-  }
+  state = {
+    selectedTabIndex: this.props.route,
+  };
 
   componentDidMount() {
     StatusBarIOS.setStyle('light-content', true);

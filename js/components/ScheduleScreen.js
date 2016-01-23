@@ -24,7 +24,7 @@ class ScheduleScreen extends Component {
   static propTypes = {
     schedule: PropTypes.array,
     routeEvents: PropTypes.object,
-  }
+  };
 
   state = {
     loading: true,
@@ -50,7 +50,7 @@ class ScheduleScreen extends Component {
 
   onActionSelected = () => {
     this._dialog.show();
-  }
+  };
 
   onSessionChange(session) {
     this.setState({session});
