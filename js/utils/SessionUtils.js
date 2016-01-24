@@ -16,7 +16,7 @@ function sessionFromMonth(month: number): number {
 export function getCurrentSession(date: Date): string {
   const year = date.getFullYear();
   const session = sessionFromMonth(date.getMonth());
-  return '' + year + session;
+  return `${year}${session}`;
 }
 
 export function getCurrentSessions(date: Date): [string] {
@@ -29,7 +29,7 @@ export function getCurrentSessions(date: Date): [string] {
     year++;
   }
   for (let i = 0; i < NUM_SESSIONS; i++) {
-    sessions.push('' + year + session);
+    sessions.push(`${year}${session}`);
     session--;
     if (session === 0) {
       session = 3;
@@ -52,16 +52,16 @@ export function getSessionName(yearSession: ?string): string {
   const session = yearSession.substring(4, 5);
   let sessionName;
   switch (session) {
-  case '1':
-    sessionName = 'Winter';
-    break;
-  case '2':
-    sessionName = 'Summer';
-    break;
-  case '3':
-  default:
-    sessionName = 'Fall';
-    break;
+    case '1':
+      sessionName = 'Winter';
+      break;
+    case '2':
+      sessionName = 'Summer';
+      break;
+    case '3':
+    default:
+      sessionName = 'Fall';
+      break;
   }
   return `${sessionName} ${year}`;
 }

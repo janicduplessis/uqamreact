@@ -33,7 +33,8 @@ export default class Button extends Component {
       TouchableNativeFeedback;
     return (
       <FeedbackComponent
-        onPress={this.props.onPress}>
+        onPress={this.props.onPress}
+      >
         <View style={[styles.wrapper, flat && styles.flatWrapper]}>
           <Text style={[styles.text, flat && styles.flatText]}>{this.props.children}</Text>
         </View>

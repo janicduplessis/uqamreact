@@ -9,7 +9,7 @@ import React, {
   Text,
   ScrollView,
 } from 'react-native';
-import {connect} from 'react-redux/native';
+import {connect} from 'react-redux';
 
 import Button from './widgets/Button';
 import Progress from './widgets/Progress';
@@ -80,23 +80,21 @@ class ScheduleScreen extends Component {
 
   renderSchedule(schedule) {
     const courseList = schedule.courses.map((c, i) => {
-      const periodsList = c.schedule.map((p, j) => {
-        return (
-          <View key={j}>
-            {
-              j !== 0 ? <View style={listStyles.separator} /> : null
-            }
-            <View style={styles.dayRow}>
-              <Text style={styles.day}>{p.day}</Text>
-              <Text>{p.note}</Text>
-            </View>
-            <View style={styles.timeRow}>
-              <Text style={styles.time}>{p.start} - {p.end}</Text>
-              <Text>{p.locals.join(', ')}</Text>
-            </View>
+      const periodsList = c.schedule.map((p, j) =>
+        <View key={j}>
+          {
+            j !== 0 ? <View style={listStyles.separator} /> : null
+          }
+          <View style={styles.dayRow}>
+            <Text style={styles.day}>{p.day}</Text>
+            <Text>{p.note}</Text>
           </View>
-        );
-      });
+          <View style={styles.timeRow}>
+            <Text style={styles.time}>{p.start} - {p.end}</Text>
+            <Text>{p.locals.join(', ')}</Text>
+          </View>
+        </View>
+      );
       return (
         <View key={i} style={listStyles.item}>
           <Text style={listStyles.header}>{c.title}</Text>

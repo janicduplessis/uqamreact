@@ -6,7 +6,7 @@ import React, {
   PropTypes,
   View,
 } from 'react-native';
-import {connect} from 'react-redux/native';
+import {connect} from 'react-redux';
 
 import {loadAppData, setCurrentRoute} from '../actions/appActions';
 import {loadUser} from '../actions/userActions';

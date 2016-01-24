@@ -8,7 +8,7 @@ import React, {
   View,
   Text,
 } from 'react-native';
-import {connect} from 'react-redux/native';
+import {connect} from 'react-redux';
 
 import {logout} from '../actions/userActions';
 import Button from './widgets/Button';

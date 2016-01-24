@@ -1,5 +1,5 @@
 import React, {Component} from 'react-native';
-import {Provider} from 'react-redux/native';
+import {Provider} from 'react-redux';
 
 import store from './store';
 import UqamApp from './components/UqamApp';
@@ -8,7 +8,7 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        {() => <UqamApp />}
+        <UqamApp />
       </Provider>
     );
   }

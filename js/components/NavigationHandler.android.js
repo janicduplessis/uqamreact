@@ -54,7 +54,10 @@ export default class NavigationHandler extends Component {
           onPress={() => this.onNavigationItemClick(i)}
         >
           <View style={[styles.navigationListItem, selected && styles.navigationListItemSelected]}>
-            <Image source={route.icon} style={[styles.navigationListIcon, selected && styles.navigationListIconSelected]} />
+            <Image
+              source={route.icon}
+              style={[styles.navigationListIcon, selected && styles.navigationListIconSelected]}
+            />
             <Text style={selected && styles.navigationListTextSelected}>
               {route.title}
             </Text>
@@ -104,7 +107,7 @@ export default class NavigationHandler extends Component {
               onForward={() => {
                 const nextIndex = route.index + 1;
                 navigator.push({
-                  name: 'Scene ' + nextIndex,
+                  name: `Scene ${nextIndex}`,
                   index: nextIndex,
                 });
               }}

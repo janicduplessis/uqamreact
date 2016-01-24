@@ -20,7 +20,6 @@ export default class SessionPickerDialog extends Component {
 
   static defaultProps = {
     opened: false,
-    onSessionChange: () => {},
   };
 
   componentDidReceiveProps(newProps) {
@@ -36,7 +35,7 @@ export default class SessionPickerDialog extends Component {
         options: ['Cancel', ...sessions.map(s => getSessionName(s))],
         cancelButtonIndex: 0,
       }, (index) => {
-        if (index - 1 !== selectedIndex) {
+        if (this.props.onSessionChange && index - 1 !== selectedIndex) {
           this.props.onSessionChange(sessions[index - 1]);
         }
       });
@@ -46,11 +45,11 @@ export default class SessionPickerDialog extends Component {
         title: 'Pick a session',
         items: sessions.map(s => getSessionName(s)),
         itemsCallbackSingleChoice: (index) => {
-          if (index !== selectedIndex) {
+          if (this.props.onSessionChange && index !== selectedIndex) {
             this.props.onSessionChange(sessions[index]);
           }
         },
-        selectedIndex: selectedIndex,
+        selectedIndex,
       });
       dialog.show();
     }

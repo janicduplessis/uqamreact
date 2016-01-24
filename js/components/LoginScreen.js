@@ -12,7 +12,7 @@ import React, {
   Platform,
   StatusBarIOS,
 } from 'react-native';
-import {connect} from 'react-redux/native';
+import {connect} from 'react-redux';
 
 import Button from './widgets/Button';
 import colors from '../styles/colors';
@@ -93,11 +93,9 @@ class LoginScreen extends Component {
   }
 }
 
-export default connect((state) => {
-  return {
-    user: state.user,
-  };
-})(LoginScreen);
+export default connect((state) => ({
+  user: state.user,
+}))(LoginScreen);
 
 const styles = StyleSheet.create({
   container: {

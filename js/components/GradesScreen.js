@@ -11,7 +11,7 @@ import React, {
   RefreshControl,
   Platform,
 } from 'react-native';
-import {connect} from 'react-redux/native';
+import {connect} from 'react-redux';
 
 import Progress from './widgets/Progress';
 import Button from './widgets/Button';
@@ -77,7 +77,7 @@ class GradesScreen extends Component {
       setGradesSession(session),
     );
     this.setState({
-      session: session,
+      session,
       loading: true,
     }, () => {
       this.onReload();
@@ -189,21 +189,21 @@ class GradeList extends Component {
       );
     }
 
-    const rows = grades.grades.map((g, i) => {
-      return (
-        <GradeRow
-          key={i}
-          name={g.name}
-          result={g.result}
-          average={g.average} />
-      );
-    });
+    const rows = grades.grades.map((g, i) =>
+      <GradeRow
+        key={i}
+        name={g.name}
+        result={g.result}
+        average={g.average}
+      />
+    );
 
     const final = grades.final ?
       <GradeRow
         name="Final"
         result={grades.final}
-        average=" " /> : null;
+        average=" "
+      /> : null;
 
     return (
       <View style={listStyles.item}>
@@ -218,7 +218,8 @@ class GradeList extends Component {
           <GradeRow
             name="Total"
             result={grades.total.result}
-            average={grades.total.average} />
+            average={grades.total.average}
+          />
           {final}
         </View>
       </View>

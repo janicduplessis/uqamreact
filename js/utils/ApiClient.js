@@ -1,7 +1,8 @@
 export default {
   auth: null,
-  send(method: string, url: string, params: any = {}) {
+  send(method: string, url: string, params: Object = {}) {
     let body = null;
+    /* eslint max-len: 0, quote-props:0 */
     const headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Origin': 'https://mobile.uqam.ca',
@@ -16,33 +17,31 @@ export default {
 
     let requestURL = url;
     switch (method) {
-    case 'GET':
-      if (params) {
-        requestURL = url + '?' + this._encodeParams(params);
-      }
-      break;
-    case 'POST':
-      body = this._encodeParams(params);
-      break;
-    default:
-      throw new Error('Invalid method: ' + method);
+      case 'GET':
+        if (params) {
+          requestURL = `${url}?${this._encodeParams(params)}`;
+        }
+        break;
+      case 'POST':
+        body = this._encodeParams(params);
+        break;
+      default:
+        throw new Error(`Invalid method: ${method}`);
     }
 
     return fetch(requestURL, {
-      method: method,
-      headers: headers,
-      body: body,
-    }).then((resp) => {
-      return resp.text();
-    }).then((resp) => {
-      return JSON.parse(resp.substring(9));
-    });
+      method,
+      headers,
+      body,
+    })
+    .then((resp) => resp.text())
+    .then((resp) => JSON.parse(resp.substring(9)));
   },
 
   setAuth(code, nip) {
     this.auth = {
-      code: code,
-      nip: nip,
+      code,
+      nip,
     };
   },
 
@@ -50,7 +49,7 @@ export default {
     const str = [];
     for (const prop in obj) {
       if (obj.hasOwnProperty(prop)) {
-        str.push(encodeURIComponent(prop) + '=' + encodeURIComponent(obj[prop]));
+        str.push(`${encodeURIComponent(prop)}=${encodeURIComponent(obj[prop])}`);
       }
     }
     return str.join('&');

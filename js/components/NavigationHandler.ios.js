@@ -45,7 +45,8 @@ export default class NavigationHandler extends Component {
             this.setState({
               selectedTabIndex: i,
             });
-          }}>
+          }}
+        >
           <NavigatorIOS
             tintColor={colors.white}
             barTintColor={colors.primary}

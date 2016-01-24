@@ -7,26 +7,26 @@ import ApiClient from './ApiClient';
 
 const URL_BASE = 'https://mobile.uqam.ca/portail_etudiant';
 
-const URL_LOGIN = URL_BASE + '/proxy_dossier_etud.php';
-const URL_GRADES = URL_BASE + '/proxy_resultat.php';
-const URL_SCHEDULE = URL_BASE + '/proxy_dossier_etud.php';
+const URL_LOGIN = `${URL_BASE}/proxy_dossier_etud.php`;
+const URL_GRADES = `${URL_BASE}/proxy_resultat.php`;
+const URL_SCHEDULE = `${URL_BASE}/proxy_dossier_etud.php`;
 
 function getSessionCode(sessionStr) {
   const parts = sessionStr.substring(0, sessionStr.length - 1).split(' ');
   let code = parts[1];
   switch (parts[0]) {
-  case 'automne':
-    code += '3';
-    break;
-  // TODO: no sure if this is the right value.
-  case 'ete':
-    code += '2';
-    break;
-  case 'hiver':
-    code += '1';
-    break;
-  default:
-    throw Error('Invalid part');
+    case 'automne':
+      code += '3';
+      break;
+    // TODO: no sure if this is the right value.
+    case 'ete':
+      code += '2';
+      break;
+    case 'hiver':
+      code += '1';
+      break;
+    default:
+      throw Error('Invalid part');
   }
 
   return code;
@@ -35,9 +35,9 @@ function getSessionCode(sessionStr) {
 export default {
   login(code, nip) {
     const params = {
-      'code_perm': code,
-      'nip': nip,
-      'service': 'authentification',
+      code_perm: code,
+      nip,
+      service: 'authentification',
     };
     return ApiClient.send('POST', URL_LOGIN, params)
       .then((resp) => {
@@ -49,12 +49,12 @@ export default {
           firstName: resp.socio.prenom,
           lastName: resp.socio.nom,
           auth: {
-            code: code,
-            nip: nip,
+            code,
+            nip,
           },
         };
 
-        return {user: user};
+        return {user};
       });
   },
 
@@ -88,9 +88,9 @@ export default {
   getGrades(session, code, group) {
     return new Promise((resolve, reject) => {
       const params = {
-        'annee': session,
-        'sigle': code,
-        'groupe': group,
+        annee: session,
+        sigle: code,
+        groupe: group,
       };
       ApiClient.send('POST', URL_GRADES, params)
         .then((resp) => {
@@ -99,9 +99,9 @@ export default {
           // this class.
           // We will guess what is what by checking the number of columns in the table.
           const result = {
-            code: code,
-            group: group,
-            session: session,
+            code,
+            group,
+            session,
             grades: [],
             total: {},
           };
@@ -123,30 +123,30 @@ export default {
             wStdDev: -1,
           };
           switch (node0[0].length) {
-          case 3:
-            indexes = {
-              name: 0,
-              result: 1,
-              average: -1,
-              stdDev: -1,
-              wResult: 2,
-              wAverage: -1,
-              wStdDev: -1,
-            };
-            break;
-          case 4:
-            indexes = {
-              name: 0,
-              result: 1,
-              average: 2,
-              stdDev: 3,
-              wResult: 1,
-              wAverage: 2,
-              wStdDev: 3,
-            };
-            break;
-          default:
-            throw new Error('Unknown results layout');
+            case 3:
+              indexes = {
+                name: 0,
+                result: 1,
+                average: -1,
+                stdDev: -1,
+                wResult: 2,
+                wAverage: -1,
+                wStdDev: -1,
+              };
+              break;
+            case 4:
+              indexes = {
+                name: 0,
+                result: 1,
+                average: 2,
+                stdDev: 3,
+                wResult: 1,
+                wAverage: 2,
+                wStdDev: 3,
+              };
+              break;
+            default:
+              throw new Error('Unknown results layout');
           }
           for (let i = 0; i < wGradeRows.length; i++) {
             const g = gradeRows[i];
@@ -213,12 +213,12 @@ export default {
                 code: c.sigle,
                 group: c.groupe,
                 teacher: c.enseignant[0].nom,
-                schedule: schedule,
+                schedule,
               };
             });
             return {
               session: s.trim_num,
-              courses: courses,
+              courses,
             };
           });
           resolve(schedules);
