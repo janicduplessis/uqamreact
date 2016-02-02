@@ -61,18 +61,18 @@ class GradesScreen extends Component {
     this._dialog.show();
   };
 
-  onReload() {
+  onReload = () => {
     this.props.dispatch(
       getGrades(this.state.session),
     );
-  }
+  };
 
-  onRefresh() {
+  onRefresh = () => {
     this.setState({refreshing: true});
     this.onReload();
-  }
+  };
 
-  onSessionChange(session) {
+  onSessionChange = (session) => {
     this.props.dispatch(
       setGradesSession(session),
     );
@@ -82,21 +82,19 @@ class GradesScreen extends Component {
     }, () => {
       this.onReload();
     });
-  }
+  };
 
-  renderGrade(g) {
-    return <GradeList grades={g} />;
-  }
+  renderGrade = (g) => (
+    <GradeList grades={g} />
+  );
 
-  renderHeader() {
-    return (
-      <View>
-        <Text style={styles.session}>
-          {getSessionName(this.state.session)}
-        </Text>
-      </View>
-    );
-  }
+  renderHeader = () => (
+    <View>
+      <Text style={styles.session}>
+        {getSessionName(this.state.session)}
+      </Text>
+    </View>
+  );
 
   renderProgress() {
     return (
@@ -112,7 +110,7 @@ class GradesScreen extends Component {
         <Text style={styles.noCourses}>No courses for this session.</Text>
         <Button
           flat
-          onPress={() => this.onActionSelected()}
+          onPress={this.onActionSelected}
         >
           Change session
         </Button>
@@ -130,12 +128,12 @@ class GradesScreen extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={() => this.onRefresh()}
+              onRefresh={this.onRefresh}
               colors={[colors.primary]}
             />
           }
           renderRow={this.renderGrade}
-          renderHeader={() => this.renderHeader()}
+          renderHeader={this.renderHeader}
         />
       </View>
     );
@@ -155,7 +153,7 @@ class GradesScreen extends Component {
       <View style={[styles.container, styles.background]}>
         <SessionPickerDialog
           session={this.state.session}
-          onSessionChange={(s) => this.onSessionChange(s)}
+          onSessionChange={this.onSessionChange}
           ref={c => this._dialog = c}
         />
         {content}

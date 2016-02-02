@@ -4,7 +4,7 @@ import {Provider} from 'react-redux';
 import store from './store';
 import UqamApp from './components/UqamApp';
 
-class App extends Component {
+export default class AppProvider extends Component {
   render() {
     return (
       <Provider store={store}>
@@ -12,8 +12,4 @@ class App extends Component {
       </Provider>
     );
   }
-}
-
-export default function() {
-  return App;
 }

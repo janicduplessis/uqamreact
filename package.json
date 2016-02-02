@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "event-emitter": "^0.3.4",
-    "react-native": "^0.19.0-rc",
+    "react-native": "facebook/react-native",
     "react-native-dialogs": "0.0.9",
     "react-redux": "^4.0.6",
     "redux": "^3.0.4",

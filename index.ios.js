@@ -1,5 +1,5 @@
 import {AppRegistry} from 'react-native';
 
-import app from './js/app';
+import AppProvider from './js/AppProvider';
 
-AppRegistry.registerComponent('UqamNativeClient', app);
+AppRegistry.registerComponent('UqamNativeClient', () => AppProvider);

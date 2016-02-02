@@ -1,4 +1,5 @@
 rootProject.name = 'UqamNativeClient'
 
-include ':app', ':react-native-dialogs'
+include ':app', ':react-native-dialogs', ':ReactAndroid'
 project(':react-native-dialogs').projectDir = file('../node_modules/react-native-dialogs/android')
+project(':ReactAndroid').projectDir = new File(rootProject.projectDir, '../node_modules/react-native/ReactAndroid')
