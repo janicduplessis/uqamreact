@@ -14,6 +14,10 @@ const TabBarItemIOS = TabBarIOS.Item;
 import colors from '../styles/colors';
 import routes from '../routes';
 
+type State = {
+  selectedTabIndex: number,
+};
+
 export default class NavigationHandler extends Component {
 
   static propTypes = {
@@ -21,7 +25,7 @@ export default class NavigationHandler extends Component {
     onRouteChange: PropTypes.func.isRequired,
   };
 
-  state = {
+  state: State = {
     selectedTabIndex: this.props.route,
   };
 

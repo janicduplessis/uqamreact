@@ -1,18 +1,40 @@
+/**
+ * @flow
+ */
+
 import EventEmitter from 'event-emitter';
 
 import HomeScreen from './components/HomeScreen';
 import GradesScreen from './components/GradesScreen';
 import ScheduleScreen from './components/ScheduleScreen';
 
+type RouteConfig = {
+  title: string,
+  icon: number,
+  actions?: [Action],
+};
+
+type Action = {
+  title: string,
+  icon: number,
+  show: string,
+};
+
 class Route {
-  constructor(Component, props) {
-    Object.assign(this, props);
+  Component: ReactComponent;
+  eventEmitter: EventEmitter;
+  title: string;
+  icon: number;
+  actions: ?[Action];
+
+  constructor(Component: ReactComponent, props: RouteConfig) {
     this.Component = Component;
     this.eventEmitter = new EventEmitter();
+    Object.assign(this, props);
   }
 }
 
-export default [
+const routes: [Route] = [
   new Route(HomeScreen, {
     title: 'Home',
     icon: require('./images/icons/home-black-24.png'),
@@ -36,3 +58,5 @@ export default [
     }],
   }),
 ];
+
+export default routes;

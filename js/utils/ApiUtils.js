@@ -2,6 +2,7 @@
  * This module handles sending requests and parsing responses from the *not very
  * nice but better than nothing* mobile.uqam.ca/portail_etudiant api.
  *
+ * @flow
  */
 import ApiClient from './ApiClient';
 
@@ -11,7 +12,7 @@ const URL_LOGIN = `${URL_BASE}/proxy_dossier_etud.php`;
 const URL_GRADES = `${URL_BASE}/proxy_resultat.php`;
 const URL_SCHEDULE = `${URL_BASE}/proxy_dossier_etud.php`;
 
-function getSessionCode(sessionStr) {
+function getSessionCode(sessionStr: string): string {
   const parts = sessionStr.substring(0, sessionStr.length - 1).split(' ');
   let code = parts[1];
   switch (parts[0]) {
@@ -32,33 +33,31 @@ function getSessionCode(sessionStr) {
   return code;
 }
 
-export default {
-  login(code, nip) {
+export default class ApiUtils {
+  static async login(code: string, nip: string): Promise {
     const params = {
       code_perm: code,
       nip,
       service: 'authentification',
     };
-    return ApiClient.send('POST', URL_LOGIN, params)
-      .then((resp) => {
-        if (resp.err) {
-          throw Error(resp.err);
-        }
+    const resp = await ApiClient.send('POST', URL_LOGIN, params);
+    if (resp.err) {
+      throw Error(resp.err);
+    }
 
-        const user = {
-          firstName: resp.socio.prenom,
-          lastName: resp.socio.nom,
-          auth: {
-            code,
-            nip,
-          },
-        };
+    const user = {
+      firstName: resp.socio.prenom,
+      lastName: resp.socio.nom,
+      auth: {
+        code,
+        nip,
+      },
+    };
 
-        return {user};
-      });
-  },
+    return user;
+  }
 
-  getCourses() {
+  static async getCourses() {
     return new Promise((resolve, reject) => {
       ApiClient.send('POST', URL_GRADES)
         .then((resp) => {
@@ -83,9 +82,9 @@ export default {
         })
         .catch(reject);
     });
-  },
+  }
 
-  getGrades(session, code, group) {
+  static async getGrades(session: string, code: string, group: string): Promise {
     return new Promise((resolve, reject) => {
       const params = {
         annee: session,
@@ -173,9 +172,9 @@ export default {
         })
         .catch(reject);
     });
-  },
+  }
 
-  getSchedule() {
+  static async getSchedule(): Promise {
     return new Promise((resolve, reject) => {
       const params = {
         service: 'horaire',
@@ -225,5 +224,5 @@ export default {
         })
         .catch(reject);
     });
-  },
-};
+  }
+}

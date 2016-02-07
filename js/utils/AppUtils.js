@@ -1,3 +1,7 @@
+/**
+ * @flow
+ */
+
 import Storage from './Storage';
 
 const KEY_APP_STORE = 'app_store';

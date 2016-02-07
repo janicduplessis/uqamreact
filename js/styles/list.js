@@ -1,3 +1,7 @@
+/**
+ * @flow
+ */
+
 import {Platform, StyleSheet, PixelRatio} from 'react-native';
 
 import colors from './colors';

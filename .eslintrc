@@ -8,6 +8,11 @@
     "no-param-reassign": [0],
     "react/jsx-no-bind": [0],
     "react/no-multi-comp": [0],
+    "react/sort-comp": [0],
     "react/prop-types": [1, { "ignore": ["dispatch", "children"]}]
+  },
+  "globals": {
+    "ReactElement": false,
+    "ReactComponent": false
   }
 }

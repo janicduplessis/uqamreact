@@ -3,14 +3,12 @@
  */
 import React, {
   Component,
-  AlertIOS,
-  ToastAndroid,
+  Alert,
   StyleSheet,
   View,
   TextInput,
   Text,
-  Platform,
-  StatusBarIOS,
+  StatusBar,
 } from 'react-native';
 import {connect} from 'react-redux';
 
@@ -19,8 +17,6 @@ import colors from '../styles/colors';
 
 import {login} from '../actions/userActions';
 
-const ios = Platform.OS === 'ios';
-
 class LoginScreen extends Component {
 
   state = {
@@ -28,9 +24,9 @@ class LoginScreen extends Component {
     nip: '',
   };
 
-  componentDidMount() {
-    if (ios) {
-      StatusBarIOS.setStyle('default', true);
+  componentWillReceiveProps(newProps) {
+    if (newProps.user.error) {
+      this.loginError();
     }
   }
 
@@ -48,16 +44,17 @@ class LoginScreen extends Component {
     this.setState({
       nip: '',
     });
-    if (ios) {
-      AlertIOS.alert('Error', 'Invalid code or nip.');
-    } else {
-      ToastAndroid.show('Invalid code or nip.', ToastAndroid.LONG);
-    }
+
+    Alert.alert('Error', 'Invalid code or nip.');
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar
+          animated
+          barStyle="default"
+        />
         <Text style={styles.title}>UQAM Portal</Text>
         <View>
           <TextInput
@@ -107,7 +104,6 @@ const styles = StyleSheet.create({
     marginTop: 32,
     fontSize: 26,
     fontWeight: 'bold',
-    color: colors.textDark,
     textAlign: 'center',
   },
   default: {

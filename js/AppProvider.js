@@ -1,3 +1,7 @@
+/**
+ * @flow
+ */
+
 import React, {Component} from 'react-native';
 import {Provider} from 'react-redux';
 

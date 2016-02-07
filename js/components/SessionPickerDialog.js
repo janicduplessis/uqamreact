@@ -1,3 +1,7 @@
+/**
+ * @flow
+ */
+
 import {
   Component,
   PropTypes,
@@ -9,6 +13,8 @@ import DialogAndroid from 'react-native-dialogs';
 import {getCurrentSessions, getSessionName} from '../utils/SessionUtils';
 
 const sessions = getCurrentSessions(new Date());
+
+type Props = typeof SessionPickerDialog.propTypes;
 
 export default class SessionPickerDialog extends Component {
 
@@ -22,7 +28,7 @@ export default class SessionPickerDialog extends Component {
     opened: false,
   };
 
-  componentDidReceiveProps(newProps) {
+  componentDidReceiveProps(newProps: Props) {
     if (!this.props.opened && newProps.opened) {
       this.show();
     }
@@ -35,7 +41,8 @@ export default class SessionPickerDialog extends Component {
         options: ['Cancel', ...sessions.map(s => getSessionName(s))],
         cancelButtonIndex: 0,
       }, (index) => {
-        if (this.props.onSessionChange && index - 1 !== selectedIndex) {
+        if (index !== 0 && this.props.onSessionChange &&
+            index - 1 !== selectedIndex) {
           this.props.onSessionChange(sessions[index - 1]);
         }
       });
@@ -55,7 +62,7 @@ export default class SessionPickerDialog extends Component {
     }
   }
 
-  render() {
+  render(): ?ReactElement {
     return null;
   }
 }

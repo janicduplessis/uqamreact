@@ -1,3 +1,7 @@
+/**
+ * @flow
+ */
+
 import ApiUtils from './ApiUtils';
 
 export default class GradeUtils {

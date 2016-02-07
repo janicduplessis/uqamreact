@@ -29,28 +29,41 @@ class GradesScreen extends Component {
 
   static propTypes = {
     grades: PropTypes.array,
+    loading: PropTypes.bool,
     session: PropTypes.string,
     routeEvents: PropTypes.object,
   };
 
   state = {
-    session: this.props.session,
     dataSource: ds.cloneWithRows(this.props.grades),
-    loading: true,
     refreshing: false,
   };
 
+  _dialog: any;
+
   componentDidMount() {
     this.props.routeEvents.on('action', this.onActionSelected);
-    this.onReload();
+    if (this.props.loading) {
+      this.onReload();
+    }
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({
-      dataSource: ds.cloneWithRows(newProps.grades),
-      loading: false,
-      refreshing: false,
-    });
+    if (newProps.session !== this.props.session) {
+      this.props.dispatch(
+        getGrades(newProps.session),
+      );
+    }
+    if (newProps.grades !== this.props.grades) {
+      this.setState({
+        dataSource: ds.cloneWithRows(newProps.grades),
+      });
+      if (this.state.refreshing && !newProps.loading) {
+        this.setState({
+          refreshing: false,
+        });
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -61,11 +74,11 @@ class GradesScreen extends Component {
     this._dialog.show();
   };
 
-  onReload = () => {
+  onReload() {
     this.props.dispatch(
-      getGrades(this.state.session),
+      getGrades(this.props.session),
     );
-  };
+  }
 
   onRefresh = () => {
     this.setState({refreshing: true});
@@ -76,12 +89,6 @@ class GradesScreen extends Component {
     this.props.dispatch(
       setGradesSession(session),
     );
-    this.setState({
-      session,
-      loading: true,
-    }, () => {
-      this.onReload();
-    });
   };
 
   renderGrade = (g) => (
@@ -91,7 +98,7 @@ class GradesScreen extends Component {
   renderHeader = () => (
     <View>
       <Text style={styles.session}>
-        {getSessionName(this.state.session)}
+        {getSessionName(this.props.session)}
       </Text>
     </View>
   );
@@ -141,7 +148,7 @@ class GradesScreen extends Component {
 
   render() {
     let content;
-    if (this.state.loading) {
+    if (this.props.loading && !this.state.refreshing) {
       content = this.renderProgress();
     } else if (!this.props.grades.length) {
       content = this.renderNoCourses();
@@ -152,7 +159,7 @@ class GradesScreen extends Component {
     return (
       <View style={[styles.container, styles.background]}>
         <SessionPickerDialog
-          session={this.state.session}
+          session={this.props.session}
           onSessionChange={this.onSessionChange}
           ref={c => this._dialog = c}
         />
@@ -163,7 +170,8 @@ class GradesScreen extends Component {
 }
 
 export default connect((state) => ({
-  grades: state.grades,
+  grades: state.grades.edges,
+  loading: state.grades.loading,
   session: state.app.gradesSession,
 }))(GradesScreen);
 

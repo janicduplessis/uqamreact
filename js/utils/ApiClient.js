@@ -1,6 +1,27 @@
-export default {
-  auth: null,
-  send(method: string, url: string, params: Object = {}) {
+/**
+ * @flow
+ */
+
+type Auth = {
+  code: string,
+  nip: string,
+};
+
+function encodeParams(obj: Object): string {
+  const str = [];
+  for (const prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      str.push(`${encodeURIComponent(prop)}=${encodeURIComponent(obj[prop])}`);
+    }
+  }
+  return str.join('&');
+}
+
+class ApiClient {
+
+  auth: ?Auth = null;
+
+  send(method: string, url: string, params: Object = {}): Promise {
     let body = null;
     /* eslint max-len: 0, quote-props:0 */
     const headers = {
@@ -19,11 +40,11 @@ export default {
     switch (method) {
       case 'GET':
         if (params) {
-          requestURL = `${url}?${this._encodeParams(params)}`;
+          requestURL = `${url}?${encodeParams(params)}`;
         }
         break;
       case 'POST':
-        body = this._encodeParams(params);
+        body = encodeParams(params);
         break;
       default:
         throw new Error(`Invalid method: ${method}`);
@@ -36,22 +57,14 @@ export default {
     })
     .then((resp) => resp.text())
     .then((resp) => JSON.parse(resp.substring(9)));
-  },
+  }
 
-  setAuth(code, nip) {
+  setAuth(code: string, nip: string) {
     this.auth = {
       code,
       nip,
     };
-  },
+  }
+}
 
-  _encodeParams(obj) {
-    const str = [];
-    for (const prop in obj) {
-      if (obj.hasOwnProperty(prop)) {
-        str.push(`${encodeURIComponent(prop)}=${encodeURIComponent(obj[prop])}`);
-      }
-    }
-    return str.join('&');
-  },
-};
+export default new ApiClient();

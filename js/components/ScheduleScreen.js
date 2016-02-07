@@ -8,6 +8,7 @@ import React, {
   View,
   Text,
   ScrollView,
+  Platform,
 } from 'react-native';
 import {connect} from 'react-redux';
 
@@ -15,33 +16,31 @@ import Button from './widgets/Button';
 import Progress from './widgets/Progress';
 import SessionPickerDialog from './SessionPickerDialog';
 import {getSchedule} from '../actions/scheduleActions';
+import {setScheduleSession} from '../actions/appActions';
 import {getSessionName} from '../utils/SessionUtils';
 import colors from '../styles/colors';
 import listStyles from '../styles/list';
 
+const ios = Platform.OS === 'ios';
+
 class ScheduleScreen extends Component {
 
   static propTypes = {
-    schedule: PropTypes.array,
-    routeEvents: PropTypes.object,
+    schedule: PropTypes.array.isRequired,
+    session: PropTypes.string.isRequired,
+    loading: PropTypes.bool.isRequired,
+    routeEvents: PropTypes.object.isRequired,
   };
 
-  state = {
-    loading: true,
-    session: '20161',
-  };
+  _dialog: any;
 
   componentDidMount() {
     this.props.routeEvents.on('action', this.onActionSelected);
-    this.props.dispatch(
-      getSchedule(),
-    );
-  }
-
-  componentWillReceiveProps() {
-    this.setState({
-      loading: false,
-    });
+    if (this.props.loading) {
+      this.props.dispatch(
+        getSchedule(),
+      );
+    }
   }
 
   componentWillUnmount() {
@@ -53,7 +52,9 @@ class ScheduleScreen extends Component {
   };
 
   onSessionChange(session) {
-    this.setState({session});
+    this.props.dispatch(
+      setScheduleSession(session),
+    );
   }
 
   renderProgress() {
@@ -107,9 +108,12 @@ class ScheduleScreen extends Component {
       );
     });
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+      >
         <Text style={styles.session}>
-          {getSessionName(this.state.session)}
+          {getSessionName(this.props.session)}
         </Text>
         {courseList}
       </ScrollView>
@@ -118,10 +122,10 @@ class ScheduleScreen extends Component {
 
   render() {
     let content;
-    if (this.state.loading) {
+    if (this.props.loading) {
       content = this.renderProgress();
     } else {
-      const schedule = this.props.schedule.find(s => s.session === this.state.session);
+      const schedule = this.props.schedule.find(s => s.session === this.props.session);
       if (!schedule || !schedule.courses.length) {
         content = this.renderNoCourses();
       } else {
@@ -131,7 +135,7 @@ class ScheduleScreen extends Component {
     return (
       <View style={[styles.container, styles.background]}>
         <SessionPickerDialog
-          session={this.state.session}
+          session={this.props.session}
           onSessionChange={(s) => this.onSessionChange(s)}
           ref={c => this._dialog = c}
         />
@@ -144,6 +148,9 @@ class ScheduleScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  content: {
+    paddingBottom: ios ? 132 : 16,
   },
   background: {
     backgroundColor: colors.grayLight,
@@ -186,5 +193,7 @@ const styles = StyleSheet.create({
 });
 
 export default connect((state) => ({
-  schedule: state.schedule,
+  loading: state.schedule.loading,
+  schedule: state.schedule.edges,
+  session: state.app.scheduleSession,
 }))(ScheduleScreen);
