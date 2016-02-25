@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.aakashns.reactnativedialogs.ReactNativeDialogsPackage;
 
-public class MainActivity extends UqamReactActivity {
+public class MainActivity extends ReactActivity {
 
     /**
      * Returns the name of the main component registered from JavaScript.
@@ -30,9 +30,9 @@ public class MainActivity extends UqamReactActivity {
     }
 
    /**
-   * A list of packages used by the app. If the app uses additional views
-   * or modules besides the default ones, add more packages here.
-   */
+    * A list of packages used by the app. If the app uses additional views
+    * or modules besides the default ones, add more packages here.
+    */
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
