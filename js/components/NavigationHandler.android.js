@@ -130,6 +130,7 @@ export default class NavigationHandler extends Component {
         drawerWidth={300}
         drawerPosition={DrawerLayoutAndroid.positions.Left}
         renderNavigationView={() => this.renderNavigationView()}
+        statusBarColor={colors.primaryDark}
       >
         <View style={styles.container}>
           {this.renderContent()}
@@ -152,6 +153,7 @@ const styles = StyleSheet.create({
   navigation: {
     flex: 1,
     backgroundColor: 'white',
+    paddingTop: 25,
   },
   navigationTitle: {
     marginTop: 16,
